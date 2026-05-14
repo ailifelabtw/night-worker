@@ -80,8 +80,8 @@
     },
     "finalizer": {
       "provider": "groq",
-      "id": "openai/gpt-oss-120b",
-      "label": "GPT-OSS 120B（Groq・仲裁者）"
+      "id": "openai/gpt-oss-20b",
+      "label": "GPT-OSS 20B（Groq・仲裁者）"
     }
   }
 }
