@@ -38,13 +38,23 @@ ${(c.avoid_topics || []).map(t => '- ' + t).join('\n')}
 ${(c.preferred_hook_types || []).map((t, i) => (i + 1) + '. ' + t).join('\n')}`;
 
   if (Array.isArray(c.recent_hits) && c.recent_hits.length > 0) {
-    s += `\n\n【最近實際發過的爆款（學風格但不要重複主題）】
+    s += `\n\n【最近實際發過的爆款（學「文案 DNA」但這些主題已經做過了，要超越不要複製）】
 ${c.recent_hits.map(h => `- 「${h.title}」\n  Hook: ${h.hook}\n  Why worked: ${h.why_worked}`).join('\n')}`;
   }
 
   if (Array.isArray(c.topic_categories_track_record) && c.topic_categories_track_record.length > 0) {
     s += `\n\n【主題類別績效紀錄】
 ${c.topic_categories_track_record.map(t => '- ' + t).join('\n')}`;
+  }
+
+  if (Array.isArray(c.expansion_zones) && c.expansion_zones.length > 0) {
+    s += `\n\n【⚠️ 重要：擴展領域（最近沒做但今天要主動探索）】
+${c.expansion_zones.map((t, i) => (i + 1) + '. ' + t).join('\n')}`;
+  }
+
+  if (c.diversity_mandate) {
+    s += `\n\n【多樣性硬規定】
+${c.diversity_mandate}`;
   }
 
   if (c.ideal_post_anatomy) {
@@ -62,7 +72,7 @@ async function round1Propose() {
   const result = await chatCompletion({
     provider: config.models.proposer.provider,
     model: config.models.proposer.id,
-    system: `你是創意 IG 內容策略師。${CONTEXT}\n\n你的工作：提案 5 個明日可發的 IG 貼文主題，每個都附完整評分。\n\n${RUBRIC}\n\n輸出嚴格 JSON：\n{\n  "proposals": [\n    {\n      "id": 1,\n      "topic": "主題標題（10-25 字）",\n      "hook": "第一行 hook（30 字內）",\n      "angle": "切入角度的 1 句解釋",\n      "scores": {\n        "hook": 數字,\n        "brand_fit": 數字,\n        "novelty": 數字,\n        "engagement": 數字\n      },\n      "total": 數字\n    }\n  ]\n}\n\n不要解釋、不要加 markdown 程式碼框、直接吐 JSON。`,
+    system: `你是創意 IG 內容策略師。${CONTEXT}\n\n你的工作：提案 5 個明日可發的 IG 貼文主題，每個都附完整評分。\n\n**多樣性硬規定（不遵守就是失敗）**：\n- 5 個提案中最多 3 個是 AI 工具實測類\n- 其餘 2 個必須從 expansion_zones 挑（教練個案 / 政府觀察 / 反主流職場 / 自媒體 meta / 生活非工作 / 可被質疑觀點 / 脆弱故事）\n- novelty 分數：跟最近爆款主題相似度高 → 6 分以下；真正開拓新領域 → 9 分以上\n\n${RUBRIC}\n\n輸出嚴格 JSON：\n{\n  "proposals": [\n    {\n      "id": 1,\n      "zone": "ai-tools" 或 "expansion",\n      "topic": "主題標題（10-25 字）",\n      "hook": "第一行 hook（30 字內）",\n      "angle": "切入角度的 1 句解釋",\n      "scores": {\n        "hook": 數字,\n        "brand_fit": 數字,\n        "novelty": 數字,\n        "engagement": 數字\n      },\n      "total": 數字\n    }\n  ]\n}\n\n不要解釋、不要加 markdown 程式碼框、直接吐 JSON。`,
     messages: [{ role: 'user', content: `請開始提案 5 個明日主題。` }],
     jsonMode: true,
     maxTokens: 3000,
@@ -95,7 +105,7 @@ async function round3Finalize(round1, round2) {
   const result = await chatCompletion({
     provider: config.models.finalizer.provider,
     model: config.models.finalizer.id,
-    system: `你是資深品牌經理，要拍板明日要發的主題。前面兩個模型已經提案 + 評論修改，你的工作：\n\n1. 綜合兩輪意見，選出**最終 3 個**主題（從 round1 原版 + round2 修訂版中選）\n2. 每個給最終評分（不能再分數通膨，要嚴格）\n3. 告訴擁有者「為什麼這 3 個」+ 「明天先發哪一個」\n\n${CONTEXT}\n\n${RUBRIC}\n\n輸出 JSON：\n{\n  "final_picks": [\n    {\n      "rank": 1,\n      "topic": "最終主題",\n      "hook": "最終 hook",\n      "angle": "切入角度",\n      "final_scores": {...},\n      "final_total": 數字,\n      "why_this": "為什麼選這個（2-3 句）",\n      "post_first": true/false\n    }\n  ],\n  "owner_message": "給擁有者的早安訊息（3-5 句總結今晚討論成果，鼓舞但不打雞血）"\n}`,
+    system: `你是資深品牌經理，要拍板明日要發的主題。前面兩個模型已經提案 + 評論修改，你的工作：\n\n1. 綜合兩輪意見，選出**最終 3 個**主題（從 round1 原版 + round2 修訂版中選）\n2. 每個給最終評分（不能再分數通膨，要嚴格）\n3. 告訴擁有者「為什麼這 3 個」+ 「明天先發哪一個」\n\n**最終 3 個的多樣性硬規定**：\n- 最多 2 個 AI 工具實測類（zone="ai-tools"）\n- 至少 1 個必須來自 expansion_zones（zone="expansion"）\n- 如果上一輪兩個都沒給夠多樣的選項，你可以推翻、要求重提（在 owner_message 標明）\n\n${CONTEXT}\n\n${RUBRIC}\n\n輸出 JSON：\n{\n  "final_picks": [\n    {\n      "rank": 1,\n      "zone": "ai-tools" 或 "expansion",\n      "topic": "最終主題",\n      "hook": "最終 hook",\n      "angle": "切入角度",\n      "final_scores": {...},\n      "final_total": 數字,\n      "why_this": "為什麼選這個（2-3 句）",\n      "post_first": true/false\n    }\n  ],\n  "owner_message": "給擁有者的早安訊息（3-5 句總結今晚討論成果，鼓舞但不打雞血）"\n}`,
     messages: [{
       role: 'user',
       content: `Round 1 原始提案：\n${JSON.stringify(round1, null, 2)}\n\nRound 2 評論 + 修改：\n${JSON.stringify(round2, null, 2)}\n\n請仲裁出最終 3 個。`
