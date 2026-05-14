@@ -12,6 +12,19 @@ const KEYS = {
   openrouter: 'OPENROUTER_API_KEY',
 };
 
+const TIMEOUT_MS = 120000; // 120 秒
+const MAX_RETRIES = 3;
+
+async function fetchWithTimeout(url, options, timeoutMs = TIMEOUT_MS) {
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), timeoutMs);
+  try {
+    return await fetch(url, { ...options, signal: ctrl.signal });
+  } finally {
+    clearTimeout(t);
+  }
+}
+
 export async function chatCompletion({ provider, model, system, messages, jsonMode = false, maxTokens = 2000 }) {
   const url = ENDPOINTS[provider];
   const keyName = KEYS[provider];
@@ -31,29 +44,54 @@ export async function chatCompletion({ provider, model, system, messages, jsonMo
   };
   if (jsonMode) body.response_format = { type: 'json_object' };
 
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify(body),
-  });
+  let lastErr;
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      const t0 = Date.now();
+      const res = await fetchWithTimeout(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify(body),
+      });
 
-  if (!res.ok) {
-    const t = await res.text();
-    throw new Error(`${provider} HTTP ${res.status}: ${t.slice(0, 200)}`);
+      // Retry only on transient errors
+      if (!res.ok) {
+        const t = await res.text();
+        const transient = [502, 503, 504, 524, 429].includes(res.status);
+        if (transient && attempt < MAX_RETRIES) {
+          console.log(`  [attempt ${attempt}/${MAX_RETRIES}] ${provider} HTTP ${res.status}, retrying...`);
+          await new Promise(r => setTimeout(r, 3000 * attempt));
+          lastErr = new Error(`${provider} HTTP ${res.status}: ${t.slice(0, 200)}`);
+          continue;
+        }
+        throw new Error(`${provider} HTTP ${res.status}: ${t.slice(0, 200)}`);
+      }
+
+      const data = await res.json();
+      const content = data.choices?.[0]?.message?.content;
+      if (!content) throw new Error(`${provider} returned no content`);
+
+      const elapsed = ((Date.now() - t0) / 1000).toFixed(1);
+      console.log(`  [${provider}/${model}] OK in ${elapsed}s (attempt ${attempt})`);
+
+      return { content, usage: data.usage, raw: data };
+    } catch (e) {
+      lastErr = e;
+      const isAbort = e.name === 'AbortError';
+      const isFetchFail = e.message?.includes('fetch failed');
+      const retryable = isAbort || isFetchFail || e.message?.includes('ECONN');
+      if (retryable && attempt < MAX_RETRIES) {
+        console.log(`  [attempt ${attempt}/${MAX_RETRIES}] ${provider} ${isAbort ? 'timeout' : 'fetch fail'}, retrying...`);
+        await new Promise(r => setTimeout(r, 3000 * attempt));
+        continue;
+      }
+      throw e;
+    }
   }
-
-  const data = await res.json();
-  const content = data.choices?.[0]?.message?.content;
-  if (!content) throw new Error(`${provider} returned no content`);
-
-  return {
-    content,
-    usage: data.usage,
-    raw: data,
-  };
+  throw lastErr || new Error('Unknown error');
 }
 
 export async function tryJson(text) {
@@ -65,7 +103,6 @@ export async function tryJson(text) {
   try {
     return JSON.parse(cleaned);
   } catch {
-    // 找第一個 { 跟最後一個 }
     const start = cleaned.indexOf('{');
     const end = cleaned.lastIndexOf('}');
     if (start >= 0 && end > start) {
