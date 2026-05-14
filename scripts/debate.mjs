@@ -22,13 +22,40 @@ const RUBRIC = `打分標準（嚴格遵守，分數通膨會被人類發現）�
 
 total = 4 個維度平均`;
 
-const CONTEXT = `【貼文擁有者背景】
-- ${config.owner}
-- 領域：${config.topic_context}
-- 受眾：${config.audience}
-- Brand voice：${config.brand_voice}
-- 避開主題：${config.avoid_topics.join('、')}
-- 偏好 hook 類型：${config.preferred_hook_types.join('、')}`;
+function buildContext(c) {
+  let s = `【貼文擁有者背景】
+- ${c.owner}
+- 領域 / 定位：${c.topic_context}
+- 受眾：${c.audience}
+
+【Brand voice（嚴格遵守）】
+${c.brand_voice}
+
+【絕對避開】
+${(c.avoid_topics || []).map(t => '- ' + t).join('\n')}
+
+【偏好的 hook 類型（附範例）】
+${(c.preferred_hook_types || []).map((t, i) => (i + 1) + '. ' + t).join('\n')}`;
+
+  if (Array.isArray(c.recent_hits) && c.recent_hits.length > 0) {
+    s += `\n\n【最近實際發過的爆款（學風格但不要重複主題）】
+${c.recent_hits.map(h => `- 「${h.title}」\n  Hook: ${h.hook}\n  Why worked: ${h.why_worked}`).join('\n')}`;
+  }
+
+  if (Array.isArray(c.topic_categories_track_record) && c.topic_categories_track_record.length > 0) {
+    s += `\n\n【主題類別績效紀錄】
+${c.topic_categories_track_record.map(t => '- ' + t).join('\n')}`;
+  }
+
+  if (c.ideal_post_anatomy) {
+    s += `\n\n【理想貼文結構（提案時請對齊）】
+${c.ideal_post_anatomy}`;
+  }
+
+  return s;
+}
+
+const CONTEXT = buildContext(config);
 
 async function round1Propose() {
   console.log(`\n=== Round 1: ${config.models.proposer.label} 提案 ===`);
