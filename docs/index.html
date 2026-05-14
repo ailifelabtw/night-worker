@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🌙 夜間打工仔</title>
+<style>
+:root {
+  --bg: #faf9f5;
+  --panel: #ffffff;
+  --text: #1f1e1d;
+  --muted: #8a8780;
+  --border: #e8e6df;
+  --accent: #c96442;
+  --gold: #b88d3f;
+  --shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #262624;
+    --panel: #2f2e2c;
+    --text: #ecebe6;
+    --muted: #9d9a92;
+    --border: #3d3b37;
+    --accent: #d97757;
+    --gold: #d4a85c;
+    --shadow: 0 1px 3px rgba(0,0,0,0.3);
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; padding: 0;
+  background: var(--bg); color: var(--text);
+  font-family: ui-sans-serif, -apple-system, "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+  font-size: 16px; line-height: 1.6;
+}
+.container { max-width: 720px; margin: 0 auto; padding: 32px 20px 80px; }
+header { text-align: center; padding: 16px 0 32px; }
+header h1 { margin: 0 0 8px; font-size: 28px; font-weight: 600; }
+header .sub { color: var(--muted); font-size: 13px; }
+
+.greeting {
+  background: var(--panel); border: 1px solid var(--border); border-radius: 14px;
+  padding: 20px 22px; margin-bottom: 24px; box-shadow: var(--shadow);
+  line-height: 1.7;
+}
+.greeting .label { font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+
+.pick {
+  background: var(--panel); border: 1px solid var(--border); border-radius: 14px;
+  padding: 22px; margin-bottom: 16px; box-shadow: var(--shadow);
+  position: relative;
+}
+.pick.featured { border-color: var(--accent); border-width: 2px; }
+.pick .rank-badge {
+  position: absolute; top: -12px; left: 20px;
+  background: var(--accent); color: white; padding: 4px 12px;
+  border-radius: 100px; font-size: 12px; font-weight: 600;
+}
+.pick.featured .rank-badge { background: var(--gold); }
+.pick .topic { font-size: 20px; font-weight: 600; margin: 8px 0 12px; }
+.pick .hook {
+  background: var(--bg); border-left: 3px solid var(--accent);
+  padding: 12px 14px; border-radius: 6px; margin: 12px 0;
+  font-style: italic; color: var(--text);
+}
+.pick .angle { color: var(--muted); font-size: 14px; margin: 12px 0; }
+.pick .why { font-size: 14px; color: var(--text); margin-top: 12px; }
+.pick .scores {
+  display: flex; gap: 12px; font-size: 12px; color: var(--muted);
+  margin-top: 14px; flex-wrap: wrap;
+}
+.pick .scores span { background: var(--bg); padding: 4px 10px; border-radius: 6px; }
+.pick .scores .total { color: var(--accent); font-weight: 600; }
+
+details { margin-top: 32px; }
+details summary {
+  cursor: pointer; padding: 12px 16px;
+  background: var(--panel); border: 1px solid var(--border); border-radius: 10px;
+  font-size: 14px; color: var(--text);
+  list-style: none;
+}
+details summary::-webkit-details-marker { display: none; }
+details summary::after { content: ' ▼'; color: var(--muted); font-size: 11px; }
+details[open] summary::after { content: ' ▲'; }
+details .content { padding: 16px 4px; }
+.round-block {
+  margin: 16px 0; padding: 16px;
+  background: var(--panel); border: 1px solid var(--border); border-radius: 10px;
+}
+.round-block h3 { margin: 0 0 12px; font-size: 14px; color: var(--muted); font-weight: 500; }
+.round-block pre {
+  background: var(--bg); padding: 12px; border-radius: 8px;
+  overflow-x: auto; font-size: 11px; line-height: 1.5;
+  max-height: 400px; overflow-y: auto;
+}
+
+.empty, .loading, .error {
+  text-align: center; padding: 60px 20px; color: var(--muted);
+}
+.empty h2 { color: var(--text); margin-bottom: 8px; }
+.error { color: var(--accent); }
+footer { text-align: center; margin-top: 48px; font-size: 12px; color: var(--muted); }
+footer a { color: var(--muted); text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>🌙 夜間打工仔</h1>
+    <div class="sub" id="dateStamp">載入中...</div>
+  </header>
+
+  <div id="content">
+    <div class="loading">⏳ 讀取昨晚的辯論結果...</div>
+  </div>
+
+  <footer>
+    AI 員工每晚為你輪班 ・
+    <a href="https://github.com/ailifelabtw/night-worker" target="_blank">查看原始碼</a>
+  </footer>
+</div>
+
+<script>
+async function load() {
+  const content = document.getElementById('content');
+  const dateStamp = document.getElementById('dateStamp');
+
+  try {
+    const res = await fetch('../results/latest.json', { cache: 'no-store' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+
+    if (!data.success) {
+      content.innerHTML = `
+        <div class="error">
+          <h2>⚠ 昨晚辯論失敗</h2>
+          <p>${escapeHtml(data.error || '未知錯誤')}</p>
+          <p style="margin-top:16px;font-size:12px;">執行時間：${new Date(data.started_at).toLocaleString('zh-TW')}</p>
+        </div>`;
+      return;
+    }
+
+    dateStamp.textContent = `${data.date} 凌晨辯論結果 ・ 耗時 ${data.duration_seconds} 秒`;
+
+    const r3 = data.rounds.round3;
+    const picks = r3?.final_picks || [];
+    const greeting = r3?.owner_message || '';
+
+    let html = '';
+
+    if (greeting) {
+      html += `<div class="greeting">
+        <div class="label">給你的訊息</div>
+        <div>${escapeHtml(greeting)}</div>
+      </div>`;
+    }
+
+    for (const p of picks) {
+      const featured = p.post_first || p.rank === 1;
+      html += `
+        <div class="pick ${featured ? 'featured' : ''}">
+          <div class="rank-badge">${featured ? '🏆 首選' : '#' + p.rank}</div>
+          <div class="topic">${escapeHtml(p.topic)}</div>
+          <div class="hook">"${escapeHtml(p.hook)}"</div>
+          <div class="angle">📐 切入角度：${escapeHtml(p.angle)}</div>
+          <div class="why">💭 ${escapeHtml(p.why_this)}</div>
+          <div class="scores">
+            <span>hook ${p.final_scores?.hook}</span>
+            <span>brand ${p.final_scores?.brand_fit}</span>
+            <span>novel ${p.final_scores?.novelty}</span>
+            <span>engage ${p.final_scores?.engagement}</span>
+            <span class="total">總分 ${p.final_total}</span>
+          </div>
+        </div>`;
+    }
+
+    // 完整辯論紀錄
+    html += `
+      <details>
+        <summary>📜 看完整辯論過程（${Object.keys(data.rounds).length} 輪）</summary>
+        <div class="content">
+          <div class="round-block">
+            <h3>Round 1 - ${data.config_snapshot.models.proposer.label} 提案</h3>
+            <pre>${escapeHtml(JSON.stringify(data.rounds.round1, null, 2))}</pre>
+          </div>
+          <div class="round-block">
+            <h3>Round 2 - ${data.config_snapshot.models.critic.label} 評論</h3>
+            <pre>${escapeHtml(JSON.stringify(data.rounds.round2, null, 2))}</pre>
+          </div>
+          <div class="round-block">
+            <h3>Round 3 - ${data.config_snapshot.models.finalizer.label} 仲裁</h3>
+            <pre>${escapeHtml(JSON.stringify(data.rounds.round3, null, 2))}</pre>
+          </div>
+        </div>
+      </details>`;
+
+    content.innerHTML = html;
+  } catch (e) {
+    content.innerHTML = `
+      <div class="empty">
+        <h2>還沒有辯論結果</h2>
+        <p>workflow 還沒跑過、或正在跑。</p>
+        <p style="margin-top:16px;font-size:12px;">${escapeHtml(e.message)}</p>
+      </div>`;
+  }
+}
+
+function escapeHtml(s) {
+  if (s == null) return '';
+  return String(s).replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
+}
+
+load();
+</script>
+</body>
+</html>

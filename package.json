@@ -1,0 +1,14 @@
+{
+  "name": "night-worker",
+  "version": "0.1.0",
+  "description": "夜間打工仔 - 三個 AI 模型每晚輪班為你 brainstorm",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "debate": "node scripts/debate.mjs",
+    "debate:dry": "echo 'Run with GROQ_API_KEY=... NVIDIA_API_KEY=... npm run debate'"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

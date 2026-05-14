@@ -1,0 +1,30 @@
+{
+  "owner": "我",
+  "topic_context": "我做生涯教練 + 政府標案資訊（govtechnews.org）。IG 主帳目標：幫陷入職涯焦慮的人找方向。",
+  "audience": "30-45 歲台灣上班族，有工作但對未來感到不確定",
+  "brand_voice": "誠實、直白、不打雞血、用個案敘事，不用咒術型語言（『改寫人生』『財富自由』那種）",
+  "avoid_topics": ["快速致富", "投資建議", "靈性玄學"],
+  "preferred_hook_types": ["loss-framing", "問句+痛點 list", "反直覺洞察"],
+  "rounds": {
+    "max": 3,
+    "min": 2,
+    "score_threshold": 8.5
+  },
+  "models": {
+    "proposer": {
+      "provider": "groq",
+      "id": "llama-3.3-70b-versatile",
+      "label": "Llama 3.3 70B（提案者）"
+    },
+    "critic": {
+      "provider": "nvidia",
+      "id": "moonshotai/kimi-k2.6",
+      "label": "Kimi K2.6（評論者）"
+    },
+    "finalizer": {
+      "provider": "groq",
+      "id": "openai/gpt-oss-120b",
+      "label": "GPT-OSS 120B（仲裁者）"
+    }
+  }
+}

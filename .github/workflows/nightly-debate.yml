@@ -1,0 +1,61 @@
+name: 🌙 Nightly Debate
+
+on:
+  schedule:
+    # 每天 UTC 18:00 = 台北 02:00 觸發
+    - cron: '0 18 * * *'
+  workflow_dispatch:
+    inputs:
+      config_path:
+        description: '使用哪份 config (預設 config/default.json)'
+        required: false
+        default: 'config/default.json'
+
+permissions:
+  contents: write
+
+jobs:
+  debate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Verify secrets
+        run: |
+          if [ -z "${{ secrets.GROQ_API_KEY }}" ]; then
+            echo "❌ Missing GROQ_API_KEY in repo secrets"
+            echo "Get one at https://console.groq.com/keys (no credit card needed)"
+            exit 1
+          fi
+          if [ -z "${{ secrets.NVIDIA_API_KEY }}" ]; then
+            echo "❌ Missing NVIDIA_API_KEY in repo secrets"
+            echo "Get one at https://build.nvidia.com (no credit card needed)"
+            exit 1
+          fi
+          echo "✅ All required secrets configured"
+
+      - name: Run debate
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+          CONFIG_PATH: ${{ inputs.config_path || 'config/default.json' }}
+        run: node scripts/debate.mjs
+
+      - name: Commit results
+        run: |
+          git config user.name "night-worker-bot"
+          git config user.email "night-worker-bot@users.noreply.github.com"
+          git add results/
+          if git diff --cached --quiet; then
+            echo "Nothing to commit"
+          else
+            git commit -m "🌙 Nightly debate $(date -u +%Y-%m-%d)"
+            git push
+          fi
