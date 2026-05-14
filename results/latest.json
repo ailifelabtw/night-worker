@@ -1,0 +1,259 @@
+{
+  "date": "2026-05-14",
+  "started_at": "2026-05-14T10:36:52.558Z",
+  "config_snapshot": {
+    "topic_context": "我做生涯教練 + 政府標案資訊（govtechnews.org）。IG 主帳目標：幫陷入職涯焦慮的人找方向。",
+    "models": {
+      "proposer": {
+        "provider": "nvidia",
+        "id": "moonshotai/kimi-k2.6",
+        "label": "Kimi K2.6（提案者）"
+      },
+      "critic": {
+        "provider": "nvidia",
+        "id": "moonshotai/kimi-k2.6",
+        "label": "Kimi K2.6（評論者）"
+      },
+      "finalizer": {
+        "provider": "nvidia",
+        "id": "moonshotai/kimi-k2.6",
+        "label": "Kimi K2.6（仲裁者）"
+      }
+    }
+  },
+  "rounds": {
+    "round1": {
+      "proposals": [
+        {
+          "id": 1,
+          "topic": "我花了七年，才搞懂「穩定」不是安全感的同義詞",
+          "hook": "待過政府標案、待過上市公司，最後發現：讓我失眠的從來不是沒工作，是不知道還能做什麼。",
+          "angle": "用個人跨領域經歷拆穿「穏定=安全」的幻覺，銜接生涯教練的定位轉折",
+          "score": {
+            "hook": 9,
+            "brand_fit": 9,
+            "novelty": 7,
+            "engagement": 8
+          },
+          "total": 8.25
+        },
+        {
+          "id": 2,
+          "topic": "他們說我很會規劃，但我沒說的是——",
+          "hook": "我幫上百人做過職涯諮詢，但自己的人生規劃曾經失靈到去看身心科。",
+          "angle": "反轉專業權威人設，以脆弱性建立信任，呼應 govtech 數據思維與真實人性的落差",
+          "score": {
+            "hook": 9,
+            "brand_fit": 8,
+            "novelty": 8,
+            "engagement": 9
+          },
+          "total": 8.5
+        },
+        {
+          "id": 3,
+          "topic": "30歲後沒人告訴你的：履歷上沒寫的，才是你的籌碼",
+          "hook": "我意思不是什麼軟實力那種廢話。是你以為浪費掉的那些年。",
+          "angle": "搶奪「浪費時間」的重新詮釋權，對政府標案與教練背景有雙重隱喻",
+          "score": {
+            "hook": 8,
+            "brand_fit": 8,
+            "novelty": 9,
+            "engagement": 8
+          },
+          "total": 8.25
+        },
+        {
+          "id": 4,
+          "topic": "為什麼「找到熱情」是史上最殘酷的職涯建",
+          "hook": "我收過最多哭的人，不是被裁員的，是辭職去找熱情、結果發現自己什麼都不愛的。",
+          "angle": "直擊熱情迷思，用教練實際個案數據反主流敘事，loss-framing 觸及辭職猶豫者",
+          "score": {
+            "hook": 9,
+            "brand_fit": 9,
+            "novelty": 8,
+            "engagement": 9
+          },
+          "total": 8.75
+        },
+        {
+          "id": 5,
+          "topic": "在政府標案裡學到的：最危險的人不是無能的，是這種",
+          "hook": "職場上真正讓你翻不了身的，不是能力差的——是太認真做對的事、但從沒問過『這是誰的事』。",
+          "angle": "從 govtech 視角提煉職場政治洞察，反直覺重新定義「危險」與「能幹」",
+          "score": {
+            "hook": 9,
+            "brand_fit": 7,
+            "novelty": 9,
+            "engagement": 9
+          },
+          "total": 8.5
+        }
+      ]
+    },
+    "round2": {
+      "my_scores_for_all": [
+        {
+          "id": 1,
+          "topic": "我花了七年，才搞懂「穩定」不是安全感的同義詞",
+          "scores": {
+            "hook": 8,
+            "brand_fit": 8,
+            "novelty": 6,
+            "engagement": 7
+          },
+          "total": 7.25,
+          "comment": "「穩定≠安全感」已講爾七年，hook 前半句像雞湯標題生成器產物。loss-framing 弱，沒有選擇痛苦的具體畫面。brand_fit 還行但太安全，沒有你慣常的刺眼細節。"
+        },
+        {
+          "id": 2,
+          "topic": "他們說我很會規劃，但我沒說的是——",
+          "scores": {
+            "hook": 9,
+            "brand_fit": 9,
+            "novelty": 8,
+            "engagement": 9
+          },
+          "total": 8.75,
+          "comment": "破折號用得準，克制暴雷。'他們'與'我'的張力、專業權威與個人失靈的對撞，完全是你。但第二行'失靈到去看身心科'略為台詞化，再收一點更好。"
+        },
+        {
+          "id": 3,
+          "topic": "30歲後沒人告訴你的：履歷上沒寫的，才是你的籌碼",
+          "scores": {
+            "hook": 7,
+            "brand_fit": 7,
+            "novelty": 6,
+            "engagement": 7
+          },
+          "total": 7,
+          "comment": "後半句災難級罐頭，掉進 '沒人告訴你''才是你的...' 模板深淵。'沒寫的才是籌碼' 也是雞湯常見句型，新穎度硬傷。唯一救星是那句 '不是你以為的軟實力' 但來不及了。"
+        },
+        {
+          "id": 4,
+          "topic": "為什麼「找到熱情」是史上最殘酷的職涯建議",
+          "scores": {
+            "hook": 9,
+            "brand_fit": 9,
+            "novelty": 9,
+            "engagement": 9
+          },
+          "total": 9,
+          "comment": "句子長度剛好卡住滑動手指。'史上最殘酷' 乍看像咒術但後面立刻用個案止血，'什麼都不愛' 是貨真價實的 loss-framing，目標受眾會在凌晨三點被這句刺到。互動潛力最高。"
+        },
+        {
+          "id": 5,
+          "topic": "在政府標案裡學到的：最危險的人不是無能的，是這種",
+          "scores": {
+            "hook": 8,
+            "brand_fit": 8,
+            "novelty": 9,
+            "engagement": 8
+          },
+          "total": 8.25,
+          "comment": "反直覺結構漂亮，'這種'懸念有效。但 '最危險的人' 有點像職場生存文，且 '太認真做對的事' 到 '這是誰的事' 轉折略工整，少了點你的沈痛口氣。govtech 背景是加分但沒被解開。"
+        }
+      ],
+      "top_3_ids": [
+        4,
+        2,
+        5
+      ],
+      "revisions": [
+        {
+          "original_id": 4,
+          "revised_topic": "為什麼「找到熱情」是史上最殘酷的職涯建議",
+          "revised_hook": "我收過最多哭的人，不是被裁員的。是辭掉六萬去環遊世界，回來發現自己什麼都不愛的。",
+          "what_changed": "把 '辭職去找熱情' 具體化為 '辭掉六萬去環遊世界'——數字錨定讓荒謬感浮現，'什麼都不愛' 前面加上回來才發現的時間差，強化人生暫停的幻覺。原 hook 已很強，這版讓人无法只用 '加油' 回覆。",
+          "new_scores": {
+            "hook": 10,
+            "brand_fit": 9,
+            "novelty": 9,
+            "engagement": 10
+          },
+          "new_total": 9.5
+        },
+        {
+          "original_id": 2,
+          "revised_topic": "他們說我很會規劃，但我沒說的是——",
+          "revised_hook": "我的行事曆排到三年後，健保卡卻刷在身心科。不是因為太忙，是因為我知道下一步，但不知道我是誰。",
+          "what_changed": "原 '失靈到去看身心科' 太像成功學演講的轉折台詞。改成 '行事曆排到三年後，健保卡卻刷在身心科' 讓兩個系統（規劃/身體）並置，'知道下一步但不知道我是誰' 把 '規劃' 的虛無感打開，避免廉價脆弱。",
+          "new_scores": {
+            "hook": 10,
+            "brand_fit": 10,
+            "novelty": 9,
+            "engagement": 9
+          },
+          "new_total": 9.5
+        },
+        {
+          "original_id": 5,
+          "revised_topic": "在政府標案裡學到的：最危險的人不是無能的，是這種",
+          "revised_hook": "標案裡最難處理的不是廠商出包，是科長每天加班到九點，還問我：這樣算有貢獻嗎。",
+          "what_changed": "拿掉 '最危險的人' 這種職場文標配詞，改用具體場景：科長、九點、反問句。把 '太認真做對的事' 從抽象判斷轉為一個人對著顧問問 '這樣算有貢獻嗎'——govtech 背景變成敘事細節而非標籤，反諷也更深：連有權定義貢獻的人都无法確認。",
+          "new_scores": {
+            "hook": 9,
+            "brand_fit": 9,
+            "novelty": 9,
+            "engagement": 9
+          },
+          "new_total": 9
+        }
+      ]
+    },
+    "round3": {
+      "final_picks": [
+        {
+          "rank": 1,
+          "topic": "為什麼「找到熱情」是史上最殘酷的職涯建議",
+          "hook": "我收過最多哭的人，不是被裁員的。是辭掉六萬去環遊世界，回來發現自己什麼都不愛的。",
+          "angle": "直擊熱情迷思，用具體金額和行動錨定loss-framing，讓辭職猶豫者在個案敘事中看見自己的幽靈",
+          "final_scores": {
+            "hook": 10,
+            "brand_fit": 9,
+            "novelty": 9,
+            "engagement": 10
+          },
+          "final_total": 9.5,
+          "why_this": "這是你brand voice的完全體：不否定找熱情，但用『辭掉六萬』的具體錨點讓人無法滑過。loss-framing精準命中30-45歲猶豫者，留言會炸。",
+          "post_first": true
+        },
+        {
+          "rank": 2,
+          "topic": "他們說我很會規劃，但我沒說的是——",
+          "hook": "我的行事曆排到三年後，健保卡卻刷在身心科。不是因為太忙，是因為我知道下一步，但不知道我是誰。",
+          "angle": "以規劃系統與身體系統的並置，解開專業權威人設，讓『知道下一步』成為比失敗更蒼白的虛無",
+          "final_scores": {
+            "hook": 10,
+            "brand_fit": 10,
+            "novelty": 9,
+            "engagement": 9
+          },
+          "final_total": 9.25,
+          "why_this": " revised版把廉價脆弱轉成精準隱喻，'行事曆/健保卡'的對位是你過去沒打出來的王牌。brand_fit滿分，但互動潛力略低於#4——它需要讀者停下來消化，而非立刻認領情緒。",
+          "post_first": false
+        },
+        {
+          "rank": 3,
+          "topic": "在政府標案裡學到的：最危險的人不是無能的，是這種",
+          "hook": "標案裡最難處理的不是廠商出包，是科長每天加班到九點，還問我：這樣算有貢獻嗎。",
+          "angle": "以govtech現場的具體場景取代抽象職場法則，讓『認真無用』的反直覺洞察從一個人的反問中長出來",
+          "final_scores": {
+            "hook": 9,
+            "brand_fit": 9,
+            "novelty": 9,
+            "engagement": 9
+          },
+          "final_total": 9,
+          "why_this": " revised版總算讓govtech背景從標籤變成敘事細節，『科長九點的反問』是近期少見的台灣職場場景。但需放第三位——它的共鳴門檻需要一點公務/承包經驗，不如前兩則普世。",
+          "post_first": false
+        }
+      ],
+      "owner_message": "今晚兩輪打下來，#4修訂版是你的明天首選——它同時滿足刺眼的具體細節、loss-framing判斷精準、而且沒有犧牲你的誠實調性。#2修訂版進步最大，從'演講台詞'變成'私訊語氣'，值得等等再發。早點睡，明天發文後看前三小時數據，不需要回覆每一則留言，但第一則要留在對的時間點。"
+    }
+  },
+  "error": null,
+  "success": true,
+  "finished_at": "2026-05-14T10:39:47.379Z",
+  "duration_seconds": 175
+}
