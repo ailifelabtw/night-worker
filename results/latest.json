@@ -1,6 +1,6 @@
 {
   "date": "2026-05-14",
-  "started_at": "2026-05-14T12:15:45.754Z",
+  "started_at": "2026-05-14T13:24:34.068Z",
   "config_snapshot": {
     "topic_context": "我是『AI 生活實驗室』(@life.coach.mtcity)，定位『工具實測 + 用 AI 重構生活』。最近 2 個月固定打 AI 工具實作主題（Claude Code、Cloudflare、Kimi、DeepSeek、NVIDIA、FLUX、n8n、LINE 接管⋯⋯）。每篇 IG 輪播都會配 Threads 文案 + ailifelab.co 部落格文章三件式輸出，留言關鍵字 → Sky AI 私訊文章連結。同時也跑 govtechnews.org（政府標案媒體），但 IG 主力是 AI 應用面。",
     "models": {
@@ -16,8 +16,8 @@
       },
       "finalizer": {
         "provider": "groq",
-        "id": "openai/gpt-oss-120b",
-        "label": "GPT-OSS 120B（Groq・仲裁者）"
+        "id": "llama-3.3-70b-versatile",
+        "label": "Llama 3.3 70B（Groq・仲裁者）"
       }
     }
   },
@@ -26,9 +26,10 @@
       "proposals": [
         {
           "id": 1,
-          "topic": "Kimi 免費資源大公開！3 個隱藏功能不花錢",
-          "hook": "其實我也以為 Kimi 只有付費版才強，結果免費版有 3 個超實用功能",
-          "angle": "介紹 Kimi 免費資源的切入點",
+          "zone": "expansion",
+          "topic": "我被 AI 工具耽誤的職涯規劃",
+          "hook": "其實我以前也覺得 AI 只是工具人專利",
+          "angle": "分享 AI 對非技術背景人士的啟發",
           "scores": {
             "hook": 8,
             "brand_fit": 9,
@@ -39,55 +40,59 @@
         },
         {
           "id": 2,
-          "topic": "Claude 教學：6 分鐘設定自動回覆 LINE 消息",
-          "hook": "你會不會覺得，工作用 LINE 真的很煩？其實 Claude 可以幫你自動回覆",
-          "angle": "介紹 Claude 在 LINE 自動回覆的應用",
+          "zone": "ai-tools",
+          "topic": "FLUX 免費使用教學｜文生圖片不再難",
+          "hook": "蛤，FLUX 竟然免費到不行",
+          "angle": "實測 FLUX 圖片生成功能",
           "scores": {
-            "hook": 9,
-            "brand_fit": 9,
+            "hook": 7,
+            "brand_fit": 8,
             "novelty": 6,
-            "engagement": 9
+            "engagement": 7
           },
-          "total": 8.3
+          "total": 7
         },
         {
           "id": 3,
-          "topic": "NVIDIA 免費 AI 模型實測：哪個最適合你？",
-          "hook": "感謝黃仁勳，NVIDIA 開了 157 個免費 AI 模型，但哪個最值得用？",
-          "angle": "實測 NVIDIA 免費 AI 模型的切入點",
+          "zone": "expansion",
+          "topic": "政府 AI 專案拆解 ｜ 為什麼有些縣市這麼愛用 AI",
+          "hook": "你知道政府也在用 AI 嗎",
+          "angle": "分析政府 AI 專案背後的政策",
           "scores": {
             "hook": 8,
             "brand_fit": 9,
             "novelty": 8,
             "engagement": 8
           },
-          "total": 8.3
+          "total": 8.25
         },
         {
           "id": 4,
-          "topic": "DeepSeek VS Kimi：誰是免費 AI 編程之王？",
-          "hook": "其實我也試過好幾個免費 AI 編程工具，但 DeepSeek 和 Kimi 哪個最強？",
-          "angle": "比較 DeepSeek 和 Kimi 的免費 AI 編程功能",
+          "zone": "ai-tools",
+          "topic": "Claude Code 跨平台部署教學｜不用寫程式",
+          "hook": "其實 Claude Code 很簡單",
+          "angle": "實測 Claude Code 功能",
+          "scores": {
+            "hook": 7,
+            "brand_fit": 8,
+            "novelty": 6,
+            "engagement": 7
+          },
+          "total": 7
+        },
+        {
+          "id": 5,
+          "zone": "expansion",
+          "topic": "自媒體的真實數據 ｜ 我做 AI 內容的 3 個驚人發現",
+          "hook": "其實我以前也被 AI 數據騙了",
+          "angle": "分享自媒體 AI 內容數據分析",
           "scores": {
             "hook": 8,
             "brand_fit": 9,
             "novelty": 8,
             "engagement": 8
           },
-          "total": 8.3
-        },
-        {
-          "id": 5,
-          "topic": "2 小時搞定 AI 工作流：Claude + Notion 整合教學",
-          "hook": "我以前花了好多時間在熟悉這些工具，後來才知道 Claude 和 Notion 可以這樣整合",
-          "angle": "介紹 Claude 和 Notion 整合的應用",
-          "scores": {
-            "hook": 8,
-            "brand_fit": 9,
-            "novelty": 7,
-            "engagement": 8
-          },
-          "total": 8
+          "total": 8.25
         }
       ]
     },
@@ -95,76 +100,71 @@
       "my_scores_for_all": [
         {
           "id": 1,
-          "topic": "Kimi 免費資源大公開！3 個隱藏功能不花錢",
           "scores": {
-            "hook": 6,
-            "brand_fit": 7,
+            "hook": 5,
+            "brand_fit": 6,
             "novelty": 5,
-            "engagement": 6
+            "engagement": 4
           },
-          "total": 6,
-          "comment": "標題『大公開』『超實用』偏網路行銷話術，違反 brand voice。hook『其實我也以為』後面接的『超實用』是空虛形容詞，沒有具體錨點。Kimi 免費功能已有大量繁中自媒體做過，角度老。"
+          "total": 5,
+          "comment": "主題模糊到幾乎無效。『被 AI 工具耽誤的職涯規劃』語意不通——是被 AI 耽誤？還是用 AI 規劃？hook『其實我以前也覺得』是罐頭句型，沒錨點、沒痛點、沒具體事件。角度『對非技術背景人士的啟發』更是空泛，整篇不知道要講什麼。沒有數字、沒有故事骨幹、沒有『然後呢』。"
         },
         {
           "id": 2,
-          "topic": "Claude 教學：6 分鐘設定自動回覆 LINE 消息",
           "scores": {
-            "hook": 7,
-            "brand_fit": 8,
+            "hook": 5,
+            "brand_fit": 6,
             "novelty": 4,
-            "engagement": 6
+            "engagement": 4
           },
-          "total": 6.25,
-          "comment": "主題與最近爆款『Claude 接管 LINE 訊息｜三步驟、不用碰程式』高度重複，novelty 極低。hook 複製過往成功結構但沒有進化，受眾已看過同一題。標題『教學』字眼偏生硬教程感，不夠 directly vulnerable。"
+          "total": 4.75,
+          "comment": "FLUX 免費使用教學已經滿街都是，『免費到不行』是空氣形容詞，沒有具體錨點。而且 Linda 早就發過 FLUX 相關內容，這是複製貼上級的偷懶提案。hook『蛤，竟然』是 KOL 罐頭驚嘆，完全沒有品牌語氣裡的『弱者姿態』。"
         },
         {
           "id": 3,
-          "topic": "NVIDIA 免費 AI 模型實測：哪個最適合你？",
           "scores": {
-            "hook": 5,
-            "brand_fit": 5,
-            "novelty": 3,
-            "engagement": 5
+            "hook": 6,
+            "brand_fit": 8,
+            "novelty": 7,
+            "engagement": 6
           },
-          "total": 4.75,
-          "comment": "嚴重踩雷：Linda 才發過『感謝黃仁勳——NVIDIA 開了 157 個免費 AI 模型（5 個現在就能用）』，主題完全重複。hook 甚至沿用同一句『感謝黃仁勳』而無新信息。標題『哪個最適合你』是空洞的 you-focused 疑問，沒有 loss-framing 或具體錨點。"
+          "total": 6.75,
+          "comment": "govtechnews 獨家素材是好的，但 hook『你知道政府也在用 AI 嗎』是廢話——2025 年還有人在震驚這個？角度太大而空，『有些縣市這麼愛用 AI』沒說是哪些、沒說花了多少錢、沒說出一個讓人想追的疑點。標案媒體的獨家視角被浪費了，變成『政府也在用 AI 喔』的一般知識文。"
         },
         {
           "id": 4,
-          "topic": "DeepSeek VS Kimi：誰是免費 AI 編程之王？",
           "scores": {
-            "hook": 7,
+            "hook": 4,
+            "brand_fit": 6,
+            "novelty": 3,
+            "engagement": 3
+          },
+          "total": 4,
+          "comment": "Claude Code 教學 Linda 已經發過至少兩篇，『跨平台部署』聽起來像工程師終端機畫面，跟『不用寫程式』矛盾。hook『其實 Claude Code 很簡單』是無效安撫——讀者根本還不知道要幹嘛。『很簡單』三個字是 brand voice 裡最該避免的廉價保證。"
+        },
+        {
+          "id": 5,
+          "scores": {
+            "hook": 6,
             "brand_fit": 7,
             "novelty": 6,
             "engagement": 7
           },
-          "total": 6.75,
-          "comment": "『編程之王』字眼浮誇，接近『XX之王』成功學話術，不匹配品牌語氣。hook 的『哪個最強』是產品評測 common tone，缺乏 Linda 特有的脆弱視角。受眾痛點不是『哪個最強』而是『我不會寫程式怎麼辦』，角度偏題。"
-        },
-        {
-          "id": 5,
-          "topic": "2 小時搞定 AI 工作流：Claude + Notion 整合教學",
-          "scores": {
-            "hook": 7,
-            "brand_fit": 8,
-            "novelty": 6,
-            "engagement": 7
-          },
-          "total": 6.75,
-          "comment": "標題『2 小時搞定』是好錨點，但『整合教學』又回到教程口吻。hook 完全複製過往爆款『10 個 Claude 整合的超強工具』的結構，『後來才知道』後面沒有反直覺洞察或具體省下的時間／金錢。Notion 整合在 AI 圈已被大量覆蓋。"
+          "total": 6.5,
+          "comment": "'3 個驚人發現'是自媒體 meta 濫調，'驚人'兩字直接踩雷 brand voice（禁止『超強』『超實用』類形容詞）。hook『被 AI 數據騙了』語意不清——是騙點閱？騙投資？騙訂閱？有潛力但骨頭沒長好，需要具體化是哪三個發現、哪個數字讓 Linda 一度誤判。"
         }
       ],
       "top_3_ids": [
-        4,
+        3,
         5,
-        2
+        1
       ],
       "revisions": [
         {
-          "original_id": 4,
-          "revised_topic": "DeepSeek 免費寫程式，我請它做了 3 件我以為要工程師的事",
-          "revised_hook": "其實我也是那個說『我不會寫程式』的人。後來請 DeepSeek 做了 3 個我以為要外包的東西——發現免費版就夠用了，但我差點跑去學 Kimi。",
-          "what_changed": "1) 拿掉『編程之王』浮誕對決架構，改為『我以為要工程師』的痛點逆轉。2) hook 放進具體數字『3 個』+ 脆弱告白『我也是那個說不會的人』+ 反直覺『免費版就夠用』。3) 加入『差點跑去學 Kimi』的具體猶豫，呼應受眾的選擇癱瘓。4) 結尾留 tease：為什麼最後沒選 Kimi，引追問。",
+          "original_id": 3,
+          "revised_topic": "新竹縣砸 4800 萬買 AI，我看完標案內容的 3 個問號｜govtechnews 觀察",
+          "revised_hook": "大多數人不知道，有些縣市的 AI 專案其實不需要花到這麼多錢——新竹縣今年編了 4800 萬，我對完內容之後有 3 個問號。",
+          "what_changed": "把空泛『政府也在用 AI』壓縮到單一具體標案（新竹縣 4800 萬），給出可被查證的數字錨點。用『3 個問號』取代『分析政策』的空洞承諾，讀者會好奇『哪 3 個』。保留 govtechnews 獨家視角但轉譯成讀者口吻，不是『我來分析給你聽』而是『我看完也有疑問』。結尾可 tease 縣市政府常見痛點（廠商綁規格、官員不懂驗收、年年重複採購）。",
           "new_scores": {
             "hook": 8,
             "brand_fit": 9,
@@ -175,29 +175,29 @@
         },
         {
           "original_id": 5,
-          "revised_topic": "Claude + Notion 自動同步：我他媽花了 6 個月手動搬資料，其實 2 小時就能弄好",
-          "revised_hook": "以前我每週花 3 小時把 Claude 的內容貼到 Notion，6 個月後才發現——根本不該手動。後來 2 小時串接完，現在它自己跑，但我還在付月費給某個中間工具，哈哈。",
-          "what_changed": "1) hook 用具體時間錨點『每週 3 小時 x 6 個月』強化荒謬感，呼應『多花了好幾千塊訂閱費』的品牌記憶點。2) 加入自嘲轉折『但我還在付月費給某個中間工具』——承認整合不完美，反而增強可信度。3) 標題保留『2 小時』具體錨點，但拿掉『教學』，改為敘事口吻。4) CTA 設為『中間工具』引留言追問，tease 下次分享如何真正省掉。",
+          "revised_topic": "我以為 AI 內容會爆，結果 3 篇爆款是『非 AI』｜自媒體真實數據",
+          "revised_hook": "我以前以為追新工具才會有流量，後來看後台才發現——去年互動最高的 3 篇，主題都跟 AI 沒關係。",
+          "what_changed": "把廉價『驚人發現』砍掉，改成具體反直覺洞察（AI 帳號的非 AI 內容反而更爆）。hook 用『我以為...後來才發現』的經典品牌句型，既脆弱又有數據感。3 篇可揭露具體主題（例如：生涯轉折、職場老實話、個人故事），讓讀者好奇『到底是哪 3 篇』。直接挑戰『AI 帳號只能發 AI』的假設，互動潛力來自讀者的『我也是』或『真的假的』反應。",
           "new_scores": {
-            "hook": 9,
+            "hook": 8,
             "brand_fit": 9,
-            "novelty": 7,
+            "novelty": 8,
             "engagement": 8
           },
           "new_total": 8.25
         },
         {
-          "original_id": 2,
-          "revised_topic": "Claude 接 LINE 第 2 招：這次連『三步驟』都不用，直接幫你回完",
-          "revised_hook": "上個月我說 Claude 可以接管 LINE 訊息，結果有人私訊說『但我連三步驟都懶得看』。所以我試了另一個方法：連設定都不用，讓它直接幫你回。",
-          "what_changed": "1) 明確告知這是『第 2 招』／進階版，化解與前作的重複疑慮，同時利用前作流量。2) hook 用真實用戶回應『但我連三步驟都懶得看』開場，這是 brand voice 中的『弱者姿態』——不是 Linda 偷懶，是受眾反映，她呼應。3) 『連設定都不用』是反直覺升級，前作是『不用碰程式』，這次是『不用碰設定』，層次提升。4) 標題暗示『還有第 3 招』，tease 後續。",
+          "original_id": 1,
+          "revised_topic": "花了 2 年學 AI，我後來最常回頭用的其實是 2 年前就會的東西｜職涯覆盤",
+          "revised_hook": "我花了差不多 2 年，把市面上能叫得出名字的 AI 工具都摸過一輪。結果現在每天開的，還是那 3 個——而且其中 2 個，2 年前我就已經會用了。",
+          "what_changed": "把空泛『AI 對非技術背景人士的啟發』轉化為具體個人覆盤：2 年、市面上能叫出名字的工具、每天開的其實只有 3 個。用『學了一圈回到原點』的結構提供真實教訓，而非勵志雞湯。hook 用時間×數字的具體對比（2 年 vs 3 個工具、新工具 vs 2 年前就會的），自然帶出『追逐工具的徒勞』這個可被質疑的觀點。結尾可 tease『那第 3 個是什麼時候學會的』勾追問。",
           "new_scores": {
-            "hook": 9,
+            "hook": 7,
             "brand_fit": 9,
-            "novelty": 8,
-            "engagement": 9
+            "novelty": 7,
+            "engagement": 7
           },
-          "new_total": 8.75
+          "new_total": 7.5
         }
       ]
     },
@@ -205,24 +205,10 @@
       "final_picks": [
         {
           "rank": 1,
-          "topic": "Claude 接 LINE 第 2 招：這次連『三步驟』都不用，直接幫你回完",
-          "hook": "上個月我說 Claude 可以接管 LINE 訊息，結果有人私訊說『但我連三步驟都懶得看』。所以我試了另一個方法：連設定都不用，讓它直接幫你回。",
-          "angle": "進階免設定的 Claude LINE 自動回覆",
-          "final_scores": {
-            "hook": 9,
-            "brand_fit": 9,
-            "novelty": 8,
-            "engagement": 9
-          },
-          "final_total": 8.75,
-          "why_this": "最高總分，hook 結合真實回饋與反直覺升級，符合弱者自嘲、具體錨點，互動潛力大。",
-          "post_first": true
-        },
-        {
-          "rank": 2,
-          "topic": "DeepSeek 免費寫程式，我請它做了 3 件我以為要工程師的事",
-          "hook": "其實我也是那個說『我不會寫程式』的人。後來請 DeepSeek 做了 3 個我以為要外包的東西——發現免費版就夠用了，但我差點跑去學 Kimi。",
-          "angle": "DeepSeek 免費寫程式的實務案例",
+          "zone": "expansion",
+          "topic": "新竹縣砸 4800 萬買 AI，我看完標案內容的 3 個問號｜govtechnews 觀察",
+          "hook": "大多數人不知道，有些縣市的 AI 專案其實不需要花到這麼多錢——新竹縣今年編了 4800 萬，我對完內容之後有 3 個問號。",
+          "angle": "govtechnews 觀察",
           "final_scores": {
             "hook": 8,
             "brand_fit": 9,
@@ -230,30 +216,47 @@
             "engagement": 8
           },
           "final_total": 8.25,
-          "why_this": "用具體數字與脆弱告白打破『需要工程師』的迷思，novelty 高，能引發選擇焦慮的討論。",
+          "why_this": "具體錨點、獨家視角、讀者會好奇『哪 3 個問號』",
+          "post_first": true
+        },
+        {
+          "rank": 2,
+          "zone": "expansion",
+          "topic": "我以為 AI 內容會爆，結果 3 篇爆款是『非 AI』｜自媒體真實數據",
+          "hook": "我以前以為追新工具才會有流量，後來看後台才發現——去年互動最高的 3 篇，主題都跟 AI 沒關係。",
+          "angle": "自媒體真實數據",
+          "final_scores": {
+            "hook": 8,
+            "brand_fit": 9,
+            "novelty": 8,
+            "engagement": 8
+          },
+          "final_total": 8.25,
+          "why_this": "反直覺洞察、具體數字、互動潛力高",
           "post_first": false
         },
         {
           "rank": 3,
-          "topic": "Claude + Notion 自動同步：我他媽花了 6 個月手動搬資料，其實 2 小時就能弄好",
-          "hook": "以前我每週花 3 小時把 Claude 的內容貼到 Notion，6 個月後才發現——根本不該手動。後來 2 小時串接完，現在它自己跑，但我還在付月費給某個中間工具，哈哈。",
-          "angle": "Claude 與 Notion 自動同步的時間省錢敘事",
+          "zone": "expansion",
+          "topic": "花了 2 年學 AI，我後來最常回頭用的其實是 2 年前就會的東西｜職涯覆盤",
+          "hook": "我花了差不多 2 年，把市面上能叫得出名字的 AI 工具都摸過一輪。結果現在每天開的，還是那 3 個——而且其中 2 個，2 年前我就已經會用了。",
+          "angle": "職涯覆盤",
           "final_scores": {
-            "hook": 9,
+            "hook": 7,
             "brand_fit": 9,
             "novelty": 7,
-            "engagement": 8
+            "engagement": 7
           },
-          "final_total": 8.25,
-          "why_this": "具體時間錨點與自嘲讓痛點明顯，符合品牌聲音且能激起省錢討論。",
+          "final_total": 7.5,
+          "why_this": "個人覆盤、真實教訓、可被質疑的觀點",
           "post_first": false
         }
       ],
-      "owner_message": "早安 Linda，今天把兩輪意見整理出三個最符合你風格的主題。第一個是最高分、最能激發留言的 Claude LINE 進階版，建議先發。其餘兩個分別抓住免費寫程式與自動同步的痛點，都是觀眾常抱怨的點。把這波內容上線，應該能再收穫不少真實回饋，祝順利！"
+      "owner_message": "早安！最終選出三個主題：新竹縣 AI 标案觀察、自媒體真實數據和職涯覆盤。這三個主題都符合品牌語氣和避免了踩雷話題，同時帶來新穎的洞察和互動潛力。推薦先發表「新竹縣砸 4800 萬買 AI」這個主題，請檢視後確認是否符合您的預期。"
     }
   },
   "error": null,
   "success": true,
-  "finished_at": "2026-05-14T12:16:58.171Z",
-  "duration_seconds": 72
+  "finished_at": "2026-05-14T13:27:30.286Z",
+  "duration_seconds": 176
 }
