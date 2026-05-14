@@ -1,23 +1,23 @@
 {
   "date": "2026-05-14",
-  "started_at": "2026-05-14T11:43:49.474Z",
+  "started_at": "2026-05-14T12:15:45.754Z",
   "config_snapshot": {
-    "topic_context": "我做生涯教練 + 政府標案資訊（govtechnews.org）。IG 主帳目標：幫陷入職涯焦慮的人找方向。",
+    "topic_context": "我是『AI 生活實驗室』(@life.coach.mtcity)，定位『工具實測 + 用 AI 重構生活』。最近 2 個月固定打 AI 工具實作主題（Claude Code、Cloudflare、Kimi、DeepSeek、NVIDIA、FLUX、n8n、LINE 接管⋯⋯）。每篇 IG 輪播都會配 Threads 文案 + ailifelab.co 部落格文章三件式輸出，留言關鍵字 → Sky AI 私訊文章連結。同時也跑 govtechnews.org（政府標案媒體），但 IG 主力是 AI 應用面。",
     "models": {
       "proposer": {
-        "provider": "nvidia",
-        "id": "moonshotai/kimi-k2.6",
-        "label": "Kimi K2.6（提案者）"
+        "provider": "groq",
+        "id": "meta-llama/llama-4-scout-17b-16e-instruct",
+        "label": "Llama 4 Scout（Groq・提案者）"
       },
       "critic": {
         "provider": "nvidia",
         "id": "moonshotai/kimi-k2.6",
-        "label": "Kimi K2.6（評論者）"
+        "label": "Kimi K2.6（NVIDIA・評論者）"
       },
       "finalizer": {
-        "provider": "nvidia",
-        "id": "moonshotai/kimi-k2.6",
-        "label": "Kimi K2.6（仲裁者）"
+        "provider": "groq",
+        "id": "openai/gpt-oss-120b",
+        "label": "GPT-OSS 120B（Groq・仲裁者）"
       }
     }
   },
@@ -26,68 +26,68 @@
       "proposals": [
         {
           "id": 1,
-          "topic": "30歲還在做夢，會不會太晚了？",
-          "hook": "我今天刪掉一個待辦事項，叫「提醒我思考一下人生方向」。提醒一年了，我還是不知道方向在哪。",
-          "angle": "用「拖延的儀式感」當切入：不是沒想過，是想太多次沒一次認真，乾直承認這個狀態。",
+          "topic": "Kimi 免費資源大公開！3 個隱藏功能不花錢",
+          "hook": "其實我也以為 Kimi 只有付費版才強，結果免費版有 3 個超實用功能",
+          "angle": "介紹 Kimi 免費資源的切入點",
           "scores": {
-            "hook_strength": 9,
+            "hook": 8,
             "brand_fit": 9,
-            "novelty": 8,
-            "engagement_potential": 9,
-            "total": 8.8
-          }
+            "novelty": 7,
+            "engagement": 8
+          },
+          "total": 8
         },
         {
           "id": 2,
-          "topic": "你的履歷愈來愈厚，但你的人愈來愈薄",
-          "hook": "我發現我會用三種版本介紹自己，取決於對方是誰。問題是，我已經忘了哪一個版本是我。",
-          "angle": "用「人格切換」當痛點：職場上要的不同版本，到頭來沒有一個是給自己用的。",
+          "topic": "Claude 教學：6 分鐘設定自動回覆 LINE 消息",
+          "hook": "你會不會覺得，工作用 LINE 真的很煩？其實 Claude 可以幫你自動回覆",
+          "angle": "介紹 Claude 在 LINE 自動回覆的應用",
           "scores": {
-            "hook_strength": 9,
+            "hook": 9,
             "brand_fit": 9,
-            "novelty": 9,
-            "engagement_potential": 8,
-            "total": 8.8
-          }
+            "novelty": 6,
+            "engagement": 9
+          },
+          "total": 8.3
         },
         {
           "id": 3,
-          "topic": "上班族的週日晚上，比星期一還累",
-          "hook": "週日晚上我通常在做三件事：看食譜、看電影、看員工行。都不是為了開心，是為了證明我還活著。",
-          "angle": "用「無效充電」當洞察：週末不是休息，是表演休息給自己看，然後更空虛。",
+          "topic": "NVIDIA 免費 AI 模型實測：哪個最適合你？",
+          "hook": "感謝黃仁勳，NVIDIA 開了 157 個免費 AI 模型，但哪個最值得用？",
+          "angle": "實測 NVIDIA 免費 AI 模型的切入點",
           "scores": {
-            "hook_strength": 8,
+            "hook": 8,
             "brand_fit": 9,
             "novelty": 8,
-            "engagement_potential": 8,
-            "total": 8.3
-          }
+            "engagement": 8
+          },
+          "total": 8.3
         },
         {
           "id": 4,
-          "topic": "我羨慕的不是有錢，是他知道自己要什麼",
-          "hook": "問過一個財富自由的學長，你現在還煩什麼？他說：『以前煩沒錢，現在煩有錢了還是不知道要幹嘛。』",
-          "angle": "用「目標缺失」反轉：不是有錢沒錢的問題，是從來沒問過自己有錢了要幹嘛。",
+          "topic": "DeepSeek VS Kimi：誰是免費 AI 編程之王？",
+          "hook": "其實我也試過好幾個免費 AI 編程工具，但 DeepSeek 和 Kimi 哪個最強？",
+          "angle": "比較 DeepSeek 和 Kimi 的免費 AI 編程功能",
           "scores": {
-            "hook_strength": 8,
-            "brand_fit": 8,
-            "novelty": 9,
-            "engagement_potential": 9,
-            "total": 8.5
-          }
+            "hook": 8,
+            "brand_fit": 9,
+            "novelty": 8,
+            "engagement": 8
+          },
+          "total": 8.3
         },
         {
           "id": 5,
-          "topic": "離職後第一個月，我以為我會不一樣",
-          "hook": "我以為辭掉討厭的工作，我就會早起、閱讀、找到自己。結果我只是換了一個地方，繼續討厭自己。",
-          "angle": "用「地理幻覺」破題：以為問題在環境，其實問題在從沒面對過自己為什麼不開心。",
+          "topic": "2 小時搞定 AI 工作流：Claude + Notion 整合教學",
+          "hook": "我以前花了好多時間在熟悉這些工具，後來才知道 Claude 和 Notion 可以這樣整合",
+          "angle": "介紹 Claude 和 Notion 整合的應用",
           "scores": {
-            "hook_strength": 9,
+            "hook": 8,
             "brand_fit": 9,
-            "novelty": 8,
-            "engagement_potential": 9,
-            "total": 8.8
-          }
+            "novelty": 7,
+            "engagement": 8
+          },
+          "total": 8
         }
       ]
     },
@@ -95,94 +95,109 @@
       "my_scores_for_all": [
         {
           "id": 1,
-          "hook_strength": 7,
-          "brand_fit": 8,
-          "novelty": 5,
-          "engagement_potential": 6,
-          "total": 6.5,
-          "comment": "『刪掉待辦』有畫面但似曾相識 Millennials meme，『沒方向』口徑太泛，像 2021 年無數職涯焦慮帳號謝過的話。self-deprecation 有餘，刺探感不足。"
+          "topic": "Kimi 免費資源大公開！3 個隱藏功能不花錢",
+          "scores": {
+            "hook": 6,
+            "brand_fit": 7,
+            "novelty": 5,
+            "engagement": 6
+          },
+          "total": 6,
+          "comment": "標題『大公開』『超實用』偏網路行銷話術，違反 brand voice。hook『其實我也以為』後面接的『超實用』是空虛形容詞，沒有具體錨點。Kimi 免費功能已有大量繁中自媒體做過，角度老。"
         },
         {
           "id": 2,
-          "hook_strength": 6,
-          "brand_fit": 5,
-          "novelty": 5,
-          "engagement_potential": 5,
-          "total": 5.25,
-          "comment": "命題老問題：過度文學化，『你的人愈來愈薄』在 Instagram 滑過 0.8 秒內抓不到。『不同版本介紹自己』概念好，但 hook 沒把概念壓縮到一句話，變成自溺獨白。loss-framing 有但力道散掉。"
+          "topic": "Claude 教學：6 分鐘設定自動回覆 LINE 消息",
+          "scores": {
+            "hook": 7,
+            "brand_fit": 8,
+            "novelty": 4,
+            "engagement": 6
+          },
+          "total": 6.25,
+          "comment": "主題與最近爆款『Claude 接管 LINE 訊息｜三步驟、不用碰程式』高度重複，novelty 極低。hook 複製過往成功結構但沒有進化，受眾已看過同一題。標題『教學』字眼偏生硬教程感，不夠 directly vulnerable。"
         },
         {
           "id": 3,
-          "hook_strength": 8,
-          "brand_fit": 7,
-          "novelty": 7,
-          "engagement_potential": 7,
-          "total": 7.25,
-          "comment": "『證明我還活著』是亮點，但 three-item list 對 30-45 歲稍嫌工整，有種『小編排比』的算計感。週日晚上洞察本身夠痛，但開頭有點讓觀眾慢熱。"
+          "topic": "NVIDIA 免費 AI 模型實測：哪個最適合你？",
+          "scores": {
+            "hook": 5,
+            "brand_fit": 5,
+            "novelty": 3,
+            "engagement": 5
+          },
+          "total": 4.75,
+          "comment": "嚴重踩雷：Linda 才發過『感謝黃仁勳——NVIDIA 開了 157 個免費 AI 模型（5 個現在就能用）』，主題完全重複。hook 甚至沿用同一句『感謝黃仁勳』而無新信息。標題『哪個最適合你』是空洞的 you-focused 疑問，沒有 loss-framing 或具體錨點。"
         },
         {
           "id": 4,
-          "hook_strength": 7,
-          "brand_fit": 4,
-          "total": 6,
-          "novelty": 5,
-          "engagement_potential": 6,
-          "comment": "財富自由學長的設置踩到『財富自由』禁語區，即使意圖是反轉，演算法和讀者都已對此疲乏。反轉結構可預期，『要什麼』這題目太大，你的帳號給不出新答案。"
+          "topic": "DeepSeek VS Kimi：誰是免費 AI 編程之王？",
+          "scores": {
+            "hook": 7,
+            "brand_fit": 7,
+            "novelty": 6,
+            "engagement": 7
+          },
+          "total": 6.75,
+          "comment": "『編程之王』字眼浮誇，接近『XX之王』成功學話術，不匹配品牌語氣。hook 的『哪個最強』是產品評測 common tone，缺乏 Linda 特有的脆弱視角。受眾痛點不是『哪個最強』而是『我不會寫程式怎麼辦』，角度偏題。"
         },
         {
           "id": 5,
-          "hook_strength": 8,
-          "brand_fit": 8,
-          "novelty": 7,
-          "engagement_potential": 8,
-          "total": 7.75,
-          "comment": "『地理幻覺』是精準詞，hook 有反諷節奏。弱點在『繼續討厭自己』收得太重，且『離職後』主題在職涯自媒體已過度開採，需要更刁鑽的進路避免同溫層共振。"
+          "topic": "2 小時搞定 AI 工作流：Claude + Notion 整合教學",
+          "scores": {
+            "hook": 7,
+            "brand_fit": 8,
+            "novelty": 6,
+            "engagement": 7
+          },
+          "total": 6.75,
+          "comment": "標題『2 小時搞定』是好錨點，但『整合教學』又回到教程口吻。hook 完全複製過往爆款『10 個 Claude 整合的超強工具』的結構，『後來才知道』後面沒有反直覺洞察或具體省下的時間／金錢。Notion 整合在 AI 圈已被大量覆蓋。"
         }
       ],
       "top_3_ids": [
-        3,
+        4,
         5,
-        1
+        2
       ],
       "revisions": [
         {
-          "original_id": 3,
-          "revised_topic": "週日晚上的我，正在表演一個會休息的人",
-          "revised_hook": "我對週日唯一的期待，是把它活成『不像平常的日子』。結果禮拜一來的時候，只記得自己追了什麼劇，不記得有沒有真的呼吸過。",
-          "what_changed": "取消 three-item list，改為目的句 + 失憶感的反轉。『不像平常的日子』直戳目標族群『用週末修復自己』的共識，『不記得有沒有呼吸過』把 loss-framing 從『沒休息到』轉向『存在感的喪失』，更貼合你的 brand voice（直白、不咒術）。同時保留『證明我還活著』的核心洞察，但用遺忘隱喻替代吶喊，降低戲劇張力、提高帶入感。",
+          "original_id": 4,
+          "revised_topic": "DeepSeek 免費寫程式，我請它做了 3 件我以為要工程師的事",
+          "revised_hook": "其實我也是那個說『我不會寫程式』的人。後來請 DeepSeek 做了 3 個我以為要外包的東西——發現免費版就夠用了，但我差點跑去學 Kimi。",
+          "what_changed": "1) 拿掉『編程之王』浮誕對決架構，改為『我以為要工程師』的痛點逆轉。2) hook 放進具體數字『3 個』+ 脆弱告白『我也是那個說不會的人』+ 反直覺『免費版就夠用』。3) 加入『差點跑去學 Kimi』的具體猶豫，呼應受眾的選擇癱瘓。4) 結尾留 tease：為什麼最後沒選 Kimi，引追問。",
           "new_scores": {
-            "hook_strength": 9,
+            "hook": 8,
             "brand_fit": 9,
             "novelty": 8,
-            "engagement_potential": 8
+            "engagement": 8
           },
-          "new_total": 8.5
+          "new_total": 8.25
         },
         {
           "original_id": 5,
-          "revised_topic": "離職之後，我沒有變得比較喜歡自己",
-          "revised_hook": "辭掉那份工作的時候，我以為討厭的東西會跟著打卡鐘一起留下。第三個月我發現，我只是換了一個沒有旁觀者的場地，繼續嫌自己。",
-          "what_changed": "拿掉『早起、閱讀、找到自己』這類清單式預期（太像勵志模板），改為『討厭的東西跟著打卡鐘一起留下』——把情緒錨定在具體物件，而非行為清單。『沒有旁觀者的場地』比『繼續討厭自己』更冷也更準：不是哭慘，是指出『辭職作為表演』的幻滅。這個修辭避開了離職主題的氾濫感，因為它不講離職多好或多糟，只講『無觀眾時的自我審查』——這是你帳號可以獨佔的角度。",
+          "revised_topic": "Claude + Notion 自動同步：我他媽花了 6 個月手動搬資料，其實 2 小時就能弄好",
+          "revised_hook": "以前我每週花 3 小時把 Claude 的內容貼到 Notion，6 個月後才發現——根本不該手動。後來 2 小時串接完，現在它自己跑，但我還在付月費給某個中間工具，哈哈。",
+          "what_changed": "1) hook 用具體時間錨點『每週 3 小時 x 6 個月』強化荒謬感，呼應『多花了好幾千塊訂閱費』的品牌記憶點。2) 加入自嘲轉折『但我還在付月費給某個中間工具』——承認整合不完美，反而增強可信度。3) 標題保留『2 小時』具體錨點，但拿掉『教學』，改為敘事口吻。4) CTA 設為『中間工具』引留言追問，tease 下次分享如何真正省掉。",
           "new_scores": {
-            "hook_strength": 9,
+            "hook": 9,
             "brand_fit": 9,
-            "novelty": 8,
-            "engagement_potential": 8
-          },
-          "new_total": 8.5
-        },
-        {
-          "original_id": 1,
-          "revised_topic": "我今年的生日願望，是『不要再問我未來要做什麼』",
-          "revised_hook": "不是已經想好了，是這題我已經練到可以當場講出三種版本，然後事後自己都不相信。今年發現，最累的不是沒方向，是還在假裝有。",
-          "what_changed": "拿掉『待辦事項』隱喻（已被過度使用），改用更具體的社交場景『生日願望/被問未來』。保留『三種版本』的洞察（挪用自 #2 的強項），但放在『欺騙他人其實是欺騙自己』的結構裡。關鍵反轉從『沒方向』變成『假裝有方向』——這對 30-45 歲受眾更刺，因為他們往往已有社會位置，不是『找不到』而是『不能承認還在找』。最後一句『最累的不是沒方向』直接反轉直覺，形成 loss-framing。",
-          "new_scores": {
-            "hook_strength": 8,
-            "brand_fit": 9,
-            "novelty": 8,
-            "engagement_potential": 8
+            "novelty": 7,
+            "engagement": 8
           },
           "new_total": 8.25
+        },
+        {
+          "original_id": 2,
+          "revised_topic": "Claude 接 LINE 第 2 招：這次連『三步驟』都不用，直接幫你回完",
+          "revised_hook": "上個月我說 Claude 可以接管 LINE 訊息，結果有人私訊說『但我連三步驟都懶得看』。所以我試了另一個方法：連設定都不用，讓它直接幫你回。",
+          "what_changed": "1) 明確告知這是『第 2 招』／進階版，化解與前作的重複疑慮，同時利用前作流量。2) hook 用真實用戶回應『但我連三步驟都懶得看』開場，這是 brand voice 中的『弱者姿態』——不是 Linda 偷懶，是受眾反映，她呼應。3) 『連設定都不用』是反直覺升級，前作是『不用碰程式』，這次是『不用碰設定』，層次提升。4) 標題暗示『還有第 3 招』，tease 後續。",
+          "new_scores": {
+            "hook": 9,
+            "brand_fit": 9,
+            "novelty": 8,
+            "engagement": 9
+          },
+          "new_total": 8.75
         }
       ]
     },
@@ -190,55 +205,55 @@
       "final_picks": [
         {
           "rank": 1,
-          "topic": "離職之後，我沒有變得比較喜歡自己",
-          "hook": "辭掉那份工作的時候，我以為討厭的東西會跟著打卡鐘一起留下。第三個月我發現，我只是換了一個沒有旁觀者的場地，繼續嫌自己。",
-          "angle": "用『無觀眾的自我審查』替代離職敘事的慣性高潮：不是環境的問題，是把自己當表演對象的慣性搬到哪都跟著。",
+          "topic": "Claude 接 LINE 第 2 招：這次連『三步驟』都不用，直接幫你回完",
+          "hook": "上個月我說 Claude 可以接管 LINE 訊息，結果有人私訊說『但我連三步驟都懶得看』。所以我試了另一個方法：連設定都不用，讓它直接幫你回。",
+          "angle": "進階免設定的 Claude LINE 自動回覆",
           "final_scores": {
-            "hook_strength": 9,
+            "hook": 9,
             "brand_fit": 9,
             "novelty": 8,
-            "engagement_potential": 8
+            "engagement": 9
           },
-          "final_total": 8.5,
-          "why_this": "這是你帳號目前最獨佔的角度——離職話題氾濫，但『沒有旁觀者的場地』是紮實的生涯教練視角，不把辭職浪漫化也不哭慘，精準對焦30-45歲『已經動過念頭但發現沒用』的沉默族群。hook的節奏感和具象錨點（打卡鐘、場地）都到位，後續轉發價值高。",
+          "final_total": 8.75,
+          "why_this": "最高總分，hook 結合真實回饋與反直覺升級，符合弱者自嘲、具體錨點，互動潛力大。",
           "post_first": true
         },
         {
           "rank": 2,
-          "topic": "週日晚上的我，正在表演一個會休息的人",
-          "hook": "我對週日唯一的期待，是把它活成『不像平常的日子』。結果禮拜一來的時候，只記得自己追了什劇，不記得有沒有真的呼吸過。",
-          "angle": "用『失憶感』替代原本的清單羅列：不是沒休息到，是休息完不確定自己存在過。",
+          "topic": "DeepSeek 免費寫程式，我請它做了 3 件我以為要工程師的事",
+          "hook": "其實我也是那個說『我不會寫程式』的人。後來請 DeepSeek 做了 3 個我以為要外包的東西——發現免費版就夠用了，但我差點跑去學 Kimi。",
+          "angle": "DeepSeek 免費寫程式的實務案例",
           "final_scores": {
-            "hook_strength": 9,
+            "hook": 8,
             "brand_fit": 9,
             "novelty": 8,
-            "engagement_potential": 8
+            "engagement": 8
           },
-          "final_total": 8.5,
-          "why_this": "『不像平常的日子』直擊目標受眾的操作性共識，『不記得呼吸過』是楊度剛好的loss-framing——夠痛但不譁眾取寵。這個主題的時機優勢明顯，週日晚間發或週一早上發都容易觸發即時共鳴，留言門檻低。",
+          "final_total": 8.25,
+          "why_this": "用具體數字與脆弱告白打破『需要工程師』的迷思，novelty 高，能引發選擇焦慮的討論。",
           "post_first": false
         },
         {
           "rank": 3,
-          "topic": "我今年的生日願望，是『不要再問我未來要做什麼』",
-          "hook": "不是已經想好了，是這題我已經練到可以當場講出三種版本，然後事後自己都不相信。今年發現，最累的不是沒方向，是還在假裝有。",
-          "angle": "從『找不到方向』轉向『不能承認還在找』：針對已有社會位置的30-45歲，戳破『體面焦慮』。",
+          "topic": "Claude + Notion 自動同步：我他媽花了 6 個月手動搬資料，其實 2 小時就能弄好",
+          "hook": "以前我每週花 3 小時把 Claude 的內容貼到 Notion，6 個月後才發現——根本不該手動。後來 2 小時串接完，現在它自己跑，但我還在付月費給某個中間工具，哈哈。",
+          "angle": "Claude 與 Notion 自動同步的時間省錢敘事",
           "final_scores": {
-            "hook_strength": 8,
+            "hook": 9,
             "brand_fit": 9,
-            "novelty": 8,
-            "engagement_potential": 7
+            "novelty": 7,
+            "engagement": 8
           },
-          "final_total": 8,
-          "why_this": "『假裝有方向』的洞察精準，但hook的戲劇張力略遜前兩者，且『三種版本』的挪用多少稀釋了原生的畫面感。適合放在生日前後的時段發，有話題性但不必搶第一發。互動潛力稍低因為這個痛點更隱蔽，需要讀者願意承認。",
+          "final_total": 8.25,
+          "why_this": "具體時間錨點與自嘲讓痛點明顯，符合品牌聲音且能激起省錢討論。",
           "post_first": false
         }
       ],
-      "owner_message": "今晚討論到這，最後三則都有留在檯面上的資格，但我沒手軟。明天先發離職那則——它不是最安全的，但是最不會被別人搶走的聲音。另外兩則的檔期我們再看數據滾動狀態決定，不急著一次打完。你現在握的是『別人講不出來的精準』，不是『講很多』。晚安，去睡。"
+      "owner_message": "早安 Linda，今天把兩輪意見整理出三個最符合你風格的主題。第一個是最高分、最能激發留言的 Claude LINE 進階版，建議先發。其餘兩個分別抓住免費寫程式與自動同步的痛點，都是觀眾常抱怨的點。把這波內容上線，應該能再收穫不少真實回饋，祝順利！"
     }
   },
   "error": null,
   "success": true,
-  "finished_at": "2026-05-14T11:46:24.678Z",
-  "duration_seconds": 155
+  "finished_at": "2026-05-14T12:16:58.171Z",
+  "duration_seconds": 72
 }
