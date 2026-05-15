@@ -1,26 +1,13 @@
 // 三模型辯論主迴圈 - brainstorm 明日 IG 主題
+// 支援多種辯論策略，由 config.debate_mode 切換（見 scripts/strategies.mjs）
 
 import fs from 'node:fs';
 import path from 'node:path';
 import { chatCompletion, tryJson } from './providers.mjs';
+import { getStrategy } from './strategies.mjs';
 
 const CONFIG_PATH = process.env.CONFIG_PATH || 'config/default.json';
 const config = JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf-8'));
-
-const RUBRIC = `打分標準（嚴格遵守，分數通膨會被人類發現）：
-- 9-10：史詩級，預期破過去最佳互動率
-- 8-9：很好，預期穩定爆
-- 7-8：還行，可發但不會炸
-- 6-7：普通，不如不發
-- 5 以下：別發
-
-評分維度（每個 1-10）：
-1. hook 強度（前 1-2 行能不能讓人停手）
-2. 與品牌契合（符合 brand voice + 不踩 avoid_topics）
-3. 新穎程度（這個角度有沒有被講爛）
-4. 互動潛力（會引發留言、分享、儲存）
-
-total = 4 個維度平均`;
 
 function buildContext(c) {
   let s = `【貼文擁有者背景】
@@ -53,93 +40,115 @@ ${c.expansion_zones.map((t, i) => (i + 1) + '. ' + t).join('\n')}`;
   }
 
   if (c.diversity_mandate) {
-    s += `\n\n【多樣性硬規定】
-${c.diversity_mandate}`;
+    s += `\n\n【多樣性硬規定】\n${c.diversity_mandate}`;
   }
 
   if (c.ideal_post_anatomy) {
-    s += `\n\n【理想貼文結構（提案時請對齊）】
-${c.ideal_post_anatomy}`;
+    s += `\n\n【理想貼文結構（提案時請對齊）】\n${c.ideal_post_anatomy}`;
+  }
+
+  if (c.current_focus) {
+    s += `\n\n【今天的特殊背景／焦點（重要，會影響主題選擇）】\n${c.current_focus}`;
+  }
+
+  if (Array.isArray(c.cta_keyword_options) && c.cta_keyword_options.length > 0) {
+    s += `\n\n【可選的 CTA 關鍵字（從中選 1 個短詞用於留言觸發）】
+${c.cta_keyword_options.map(k => '- ' + k).join('\n')}`;
+  }
+
+  if (c.platform_constraints) {
+    s += `\n\n【平台限制 / 格式要求】\n${c.platform_constraints}`;
   }
 
   return s;
 }
 
 const CONTEXT = buildContext(config);
+const MODE = config.debate_mode || 'consensus';
+const STRATEGY = getStrategy(MODE);
+const INTER_ROUND_DELAY_MS = Number(process.env.INTER_ROUND_DELAY_MS ?? config.inter_round_delay_ms ?? 15000);
 
-async function round1Propose() {
-  console.log(`\n=== Round 1: ${config.models.proposer.label} 提案 ===`);
-  const result = await chatCompletion({
-    provider: config.models.proposer.provider,
-    model: config.models.proposer.id,
-    system: `你是創意 IG 內容策略師。${CONTEXT}\n\n你的工作：提案 5 個明日可發的 IG 貼文主題，每個都附完整評分。\n\n**多樣性硬規定（不遵守就是失敗）**：\n- 5 個提案中最多 3 個是 AI 工具實測類\n- 其餘 2 個必須從 expansion_zones 挑（教練個案 / 政府觀察 / 反主流職場 / 自媒體 meta / 生活非工作 / 可被質疑觀點 / 脆弱故事）\n- novelty 分數：跟最近爆款主題相似度高 → 6 分以下；真正開拓新領域 → 9 分以上\n\n${RUBRIC}\n\n輸出嚴格 JSON：\n{\n  "proposals": [\n    {\n      "id": 1,\n      "zone": "ai-tools" 或 "expansion",\n      "topic": "主題標題（10-25 字）",\n      "hook": "第一行 hook（30 字內）",\n      "angle": "切入角度的 1 句解釋",\n      "scores": {\n        "hook": 數字,\n        "brand_fit": 數字,\n        "novelty": 數字,\n        "engagement": 數字\n      },\n      "total": 數字\n    }\n  ]\n}\n\n不要解釋、不要加 markdown 程式碼框、直接吐 JSON。`,
-    messages: [{ role: 'user', content: `請開始提案 5 個明日主題。` }],
-    jsonMode: true,
-    maxTokens: 3000,
-  });
-  const parsed = await tryJson(result.content);
-  console.log(`提了 ${parsed.proposals?.length} 個主題`);
-  return parsed;
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+async function callWithFallback(model, args) {
+  // 支援 fallback chain：先試 primary，失敗依序試 fallbacks[0..n]
+  const chain = [model, ...(Array.isArray(model.fallbacks) ? model.fallbacks : []), ...(model.fallback ? [model.fallback] : [])];
+  let lastErr;
+  for (let i = 0; i < chain.length; i++) {
+    const m = chain[i];
+    try {
+      if (i > 0) {
+        console.log(`  ⚠ 切換備胎 ${i}/${chain.length - 1}：${m.label}`);
+      }
+      return await chatCompletion({ provider: m.provider, model: m.id, ...args });
+    } catch (e) {
+      lastErr = e;
+      const isLast = i === chain.length - 1;
+      console.log(`  ${isLast ? '❌' : '⚠'} ${m.label} 失敗：${e.message?.slice(0, 80)}`);
+      if (isLast) throw e;
+    }
+  }
+  throw lastErr;
 }
 
-async function round2Critique(round1) {
-  console.log(`\n=== Round 2: ${config.models.critic.label} 評論 + 修改 ===`);
-  const result = await chatCompletion({
-    provider: config.models.critic.provider,
-    model: config.models.critic.id,
-    system: `你是冷酷的內容分析師。你會看到另一個模型的 5 個主題提案，你的工作：\n\n1. 用同樣的 4 維度給每個提案打分（你可能比原模型嚴格）\n2. 從 5 個裡挑出你覺得最有潛力的 3 個\n3. 對被挑中的 3 個，給具體修改建議（讓 hook 更強、avoid 更明顯的踩雷）\n\n${CONTEXT}\n\n${RUBRIC}\n\n輸出 JSON：\n{\n  "my_scores_for_all": [\n    {"id": 1, "scores": {...}, "total": X, "comment": "簡短評論"}\n  ],\n  "top_3_ids": [數字, 數字, 數字],\n  "revisions": [\n    {\n      "original_id": 數字,\n      "revised_topic": "改寫後的主題",\n      "revised_hook": "改寫後 hook",\n      "what_changed": "改了什麼、為什麼",\n      "new_scores": {...},\n      "new_total": 數字\n    }\n  ]\n}`,
-    messages: [{
-      role: 'user',
-      content: `這是上一輪的提案：\n\n${JSON.stringify(round1, null, 2)}\n\n請進行評分、選出 top 3、給修改建議。`
-    }],
-    jsonMode: true,
-    maxTokens: 4000,
-  });
-  const parsed = await tryJson(result.content);
-  console.log(`挑出 top 3：${parsed.top_3_ids?.join(', ')}`);
-  return parsed;
-}
+async function runRound(roundKey, modelKey, previousRounds) {
+  const model = config.models[modelKey];
+  if (!model) throw new Error(`Missing config.models.${modelKey}`);
+  const builder = STRATEGY[roundKey];
+  if (!builder) throw new Error(`Strategy "${MODE}" missing ${roundKey}`);
 
-async function round3Finalize(round1, round2) {
-  console.log(`\n=== Round 3: ${config.models.finalizer.label} 仲裁 ===`);
-  const result = await chatCompletion({
-    provider: config.models.finalizer.provider,
-    model: config.models.finalizer.id,
-    system: `你是資深品牌經理，要拍板明日要發的主題。前面兩個模型已經提案 + 評論修改，你的工作：\n\n1. 綜合兩輪意見，選出**最終 3 個**主題（從 round1 原版 + round2 修訂版中選）\n2. 每個給最終評分（不能再分數通膨，要嚴格）\n3. 告訴擁有者「為什麼這 3 個」+ 「明天先發哪一個」\n\n**最終 3 個的多樣性硬規定**：\n- 最多 2 個 AI 工具實測類（zone="ai-tools"）\n- 至少 1 個必須來自 expansion_zones（zone="expansion"）\n- 如果上一輪兩個都沒給夠多樣的選項，你可以推翻、要求重提（在 owner_message 標明）\n\n${CONTEXT}\n\n${RUBRIC}\n\n輸出 JSON：\n{\n  "final_picks": [\n    {\n      "rank": 1,\n      "zone": "ai-tools" 或 "expansion",\n      "topic": "最終主題",\n      "hook": "最終 hook",\n      "angle": "切入角度",\n      "final_scores": {...},\n      "final_total": 數字,\n      "why_this": "為什麼選這個（2-3 句）",\n      "post_first": true/false\n    }\n  ],\n  "owner_message": "給擁有者的早安訊息（3-5 句總結今晚討論成果，鼓舞但不打雞血）"\n}`,
-    messages: [{
-      role: 'user',
-      content: `Round 1 原始提案：\n${JSON.stringify(round1, null, 2)}\n\nRound 2 評論 + 修改：\n${JSON.stringify(round2, null, 2)}\n\n請仲裁出最終 3 個。`
-    }],
-    jsonMode: true,
-    maxTokens: 3000,
+  console.log(`\n=== ${roundKey}: ${model.label} (${MODE}) ===`);
+  const { system, user, jsonMode = true, maxTokens = 3000 } = builder({
+    config,
+    context: CONTEXT,
+    previousRounds,
   });
+
+  const result = await callWithFallback(model, {
+    system,
+    messages: [{ role: 'user', content: user }],
+    jsonMode,
+    maxTokens,
+  });
+
   const parsed = await tryJson(result.content);
-  console.log(`最終選出 ${parsed.final_picks?.length} 個`);
   return parsed;
 }
 
 async function main() {
   const startedAt = new Date().toISOString();
-  console.log(`🌙 夜間打工仔 - 開工時間 ${startedAt}`);
+  console.log(`🌙 夜間打工仔 - 開工 ${startedAt}`);
+  console.log(`策略模式：${MODE}（${STRATEGY.description}）`);
 
   const results = {
     date: new Date().toISOString().slice(0, 10),
     started_at: startedAt,
     config_snapshot: {
+      debate_mode: MODE,
+      strategy_description: STRATEGY.description,
       topic_context: config.topic_context,
       models: config.models,
+      current_focus: config.current_focus || null,
     },
     rounds: {},
     error: null,
   };
 
   try {
-    results.rounds.round1 = await round1Propose();
-    results.rounds.round2 = await round2Critique(results.rounds.round1);
-    results.rounds.round3 = await round3Finalize(
-      results.rounds.round1,
-      results.rounds.round2
-    );
+    results.rounds.round1 = await runRound('round1', 'proposer', { });
+    if (INTER_ROUND_DELAY_MS > 0) {
+      console.log(`  …等 ${INTER_ROUND_DELAY_MS / 1000}s 讓 TPM bucket 喘口氣`);
+      await sleep(INTER_ROUND_DELAY_MS);
+    }
+    results.rounds.round2 = await runRound('round2', 'critic', { round1: results.rounds.round1 });
+    if (INTER_ROUND_DELAY_MS > 0) {
+      console.log(`  …等 ${INTER_ROUND_DELAY_MS / 1000}s 讓 TPM bucket 喘口氣`);
+      await sleep(INTER_ROUND_DELAY_MS);
+    }
+    results.rounds.round3 = await runRound('round3', 'finalizer', {
+      round1: results.rounds.round1,
+      round2: results.rounds.round2,
+    });
     results.success = true;
   } catch (e) {
     console.error('辯論失敗：', e.message);
@@ -152,13 +161,11 @@ async function main() {
     (new Date(results.finished_at) - new Date(results.started_at)) / 1000
   );
 
-  // 儲存結果
   const outPath = `results/${results.date}.json`;
   fs.mkdirSync(path.dirname(outPath), { recursive: true });
   fs.writeFileSync(outPath, JSON.stringify(results, null, 2));
   console.log(`\n✅ 寫入 ${outPath} (耗時 ${results.duration_seconds}s)`);
 
-  // 更新 latest.json 作為 UI 預設讀取
   fs.writeFileSync('results/latest.json', JSON.stringify(results, null, 2));
 
   if (!results.success) process.exit(1);

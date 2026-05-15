@@ -5,8 +5,10 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "debate": "node scripts/debate.mjs",
-    "debate:dry": "echo 'Run with GROQ_API_KEY=... NVIDIA_API_KEY=... npm run debate'"
+    "debate": "node --env-file=.env scripts/debate.mjs",
+    "debate:copy-writer": "CONFIG_PATH=config/copy-writer.json node --env-file=.env scripts/debate.mjs",
+    "debate:all-nvidia": "CONFIG_PATH=config/all-nvidia.json node --env-file=.env scripts/debate.mjs",
+    "debate:no-env": "node scripts/debate.mjs"
   },
   "engines": {
     "node": ">=20"

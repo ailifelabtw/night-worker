@@ -141,7 +141,8 @@ async function load() {
       return;
     }
 
-    dateStamp.textContent = `${data.date} 凌晨辯論結果 ・ 耗時 ${data.duration_seconds} 秒`;
+    const modeLabel = data.config_snapshot?.debate_mode ? ` ・ 模式 ${data.config_snapshot.debate_mode}` : '';
+    dateStamp.textContent = `${data.date} 凌晨辯論結果 ・ 耗時 ${data.duration_seconds} 秒${modeLabel}`;
 
     const r3 = data.rounds.round3;
     const picks = r3?.final_picks || [];
@@ -158,20 +159,61 @@ async function load() {
 
     for (const p of picks) {
       const featured = p.post_first || p.rank === 1;
+      const ready = p.ready_to_post; // copy_writer 模式才有
+      const hookText = ready?.hook || p.hook || '';
+      const angleText = p.angle || (p.summary_only ? `（備胎）${p.summary_only}` : '');
+      const whyText = p.why_this || p.why_this_wins || p.when_to_use || '';
+      const slides = ready?.carousel_slides || [];
+      const caption = ready?.ig_caption || '';
+      const threads = ready?.threads_short || '';
+      const cta = ready?.cta_keyword || '';
+      const reply = ready?.comment_reply_template || '';
+      const time = ready?.suggested_post_time || '';
+
       html += `
         <div class="pick ${featured ? 'featured' : ''}">
           <div class="rank-badge">${featured ? '🏆 首選' : '#' + p.rank}</div>
           <div class="topic">${escapeHtml(p.topic)}</div>
-          <div class="hook">"${escapeHtml(p.hook)}"</div>
-          <div class="angle">📐 切入角度：${escapeHtml(p.angle)}</div>
-          <div class="why">💭 ${escapeHtml(p.why_this)}</div>
+          ${hookText ? `<div class="hook">"${escapeHtml(hookText)}"</div>` : ''}
+          ${angleText ? `<div class="angle">📐 ${escapeHtml(angleText)}</div>` : ''}
+          ${whyText ? `<div class="why">💭 ${escapeHtml(whyText)}</div>` : ''}
+          ${slides.length ? `
+            <details style="margin-top:14px;">
+              <summary>📄 看完整貼文（${slides.length} 卡輪播 + IG 內文 + Threads + Sky AI 私訊範本）</summary>
+              <div class="content">
+                ${slides.map((s, i) => `<div class="round-block"><h3>卡 ${i + 1}</h3><div>${escapeHtml(s)}</div></div>`).join('')}
+                ${caption ? `<div class="round-block"><h3>IG 內文</h3><div>${escapeHtml(caption)}</div></div>` : ''}
+                ${threads ? `<div class="round-block"><h3>Threads 縮寫</h3><div>${escapeHtml(threads)}</div></div>` : ''}
+                ${cta ? `<div class="round-block"><h3>CTA 關鍵字</h3><div>${escapeHtml(cta)}</div></div>` : ''}
+                ${reply ? `<div class="round-block"><h3>Sky AI 私訊範本</h3><div>${escapeHtml(reply)}</div></div>` : ''}
+                ${time ? `<div class="round-block"><h3>建議發文時段</h3><div>${escapeHtml(time)}</div></div>` : ''}
+              </div>
+            </details>` : ''}
           <div class="scores">
-            <span>hook ${p.final_scores?.hook}</span>
-            <span>brand ${p.final_scores?.brand_fit}</span>
-            <span>novel ${p.final_scores?.novelty}</span>
-            <span>engage ${p.final_scores?.engagement}</span>
+            ${p.final_scores ? `
+              <span>hook ${p.final_scores.hook}</span>
+              <span>brand ${p.final_scores.brand_fit}</span>
+              <span>novel ${p.final_scores.novelty}</span>
+              <span>engage ${p.final_scores.engagement}</span>` : ''}
             <span class="total">總分 ${p.final_total}</span>
           </div>
+        </div>`;
+    }
+
+    if (r3?.killed) {
+      html += `
+        <div class="pick" style="opacity:0.6;border-style:dashed;">
+          <div class="rank-badge" style="background:var(--muted);">🚫 別發</div>
+          <div class="topic">${escapeHtml(r3.killed.topic)}</div>
+          <div class="why">${escapeHtml(r3.killed.why_killed)}</div>
+        </div>`;
+    }
+
+    if (Array.isArray(r3?.metrics_to_watch) && r3.metrics_to_watch.length) {
+      html += `
+        <div class="greeting">
+          <div class="label">📊 發完看這些指標</div>
+          <ul style="margin:0;padding-left:18px;">${r3.metrics_to_watch.map(m => `<li>${escapeHtml(m)}</li>`).join('')}</ul>
         </div>`;
     }
 

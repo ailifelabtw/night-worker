@@ -8,13 +8,33 @@
 
 ## 這是什麼
 
-每天凌晨 02:00，GitHub Actions 自動觸發：
+每天凌晨 02:00，GitHub Actions 自動觸發三個不同家的模型輪番辯論：
 
-1. **Round 1（提案）**：Llama 3.3 70B 提案 5 個明日 IG 主題 + 自評分
-2. **Round 2（評論）**：Kimi K2.6 給每個提案打分、挑出 top 3、給修改建議
-3. **Round 3（仲裁）**：GPT-OSS 120B 最終拍板，選出 3 個 + 排出優先順序
+1. **Round 1（提案）**：Llama 4 Scout 開出 5 個明日 IG 主題 + 自評分
+2. **Round 2（評論）**：Kimi K2.6（NVIDIA）給每個打分、挑 top 3、提改寫建議
+3. **Round 3（仲裁）**：Llama 3.3 70B 仲裁出最終 3 個 + 排出優先順序
 
 結果存進 `results/YYYY-MM-DD.json`，你打開網頁就看得到（GitHub Pages）。
+
+---
+
+## 兩種使用路徑
+
+**路徑 A：GitHub Actions 每晚自動跑（推薦長期用）**
+Fork → 設兩個 Secrets → 每天凌晨自動跑，早上起來看結果。下面「5 分鐘設定步驟」走這條。
+
+**路徑 B：本機跑一次看效果（30 秒，不用碰 GitHub Actions）**
+```bash
+git clone https://github.com/ailifelabtw/night-worker.git
+cd night-worker
+cp .env.example .env       # 開 .env 把兩個 key 填進去
+npm run debate             # 跑一次，結果寫進 results/YYYY-MM-DD.json
+```
+
+或要直接跑「明天 IG 主題＋完整文案」demo 模式：
+```bash
+npm run debate:copy-writer
+```
 
 ---
 
@@ -115,6 +135,44 @@
 
 ---
 
+## 四種辯論模式
+
+由 `config/*.json` 的 `debate_mode` 欄位控制（或用對應的 `npm run debate:*`）。
+
+| 模式 | 適合場景 | npm 指令 |
+|---|---|---|
+| `consensus`（預設） | 廣撒網提案 5 個，三輪合作收斂 | `npm run debate` |
+| `adversarial` | 一方提案、一方專挑翻車情境、第三方仲裁「值得冒險的」+「絕對別發的」 | 改 `config/default.json` 的 `debate_mode` |
+| `audience_simulation` | 模擬 5 種讀者（同行/苦主/路人/競品/嫌棄者）的留言反應預測 engagement | 同上 |
+| `copy_writer` | **直接寫 3 個含完整貼文的提案 → 改寫文案細節 → 仲裁出「明天可直接複製貼上」版** | `npm run debate:copy-writer` |
+
+四種模式吃的 system prompt 結構一樣，差別在三個 round 各自的 prompt 設計。詳見 `scripts/strategies.mjs`。
+
+## System prompt 吃哪些 input？
+
+全部寫在 `config/*.json`。哪個欄位影響什麼：
+
+| 欄位 | 用途 | 必填？ |
+|---|---|---|
+| `owner` | 帳號擁有者名字 + 風格簽名 | ✅ |
+| `topic_context` | 帳號定位（譬如：AI 工具實測 + ailifelab 部落格） | ✅ |
+| `audience` | 目標受眾畫像 | ✅ |
+| `brand_voice` | 語氣風格（含禁咒術詞、禁粗口等） | ✅ |
+| `avoid_topics` | 黑名單主題 list | ✅ |
+| `preferred_hook_types` | hook 寫法範例 list，模型會模仿這幾種 | ✅ |
+| `recent_hits` | 最近 4-5 篇實際爆款（title/hook/why_worked），當「文案 DNA 樣本」 | 強烈建議 |
+| `topic_categories_track_record` | 哪些主題類別已經做飽了 | 強烈建議 |
+| `expansion_zones` | 還沒做、希望主動探索的領域 | 強烈建議 |
+| `diversity_mandate` | 多樣性硬規定（譬如「5 提案中至少 2 個來自 expansion」） | 強烈建議 |
+| `ideal_post_anatomy` | 理想貼文結構描述 | 選填 |
+| `current_focus` | **今天的特殊背景**（譬如「明天要推教練業務」「下週有 webinar」），可每日改 | 選填，每日調整最好用 |
+| `cta_keyword_options` | 留言觸發關鍵字選項 | 選填，copy_writer 模式特別有用 |
+| `platform_constraints` | 平台格式限制（IG 字數、Threads 字數等） | 選填，copy_writer 模式特別有用 |
+| `debate_mode` | 哪種辯論模式（見上表） | 選填，預設 `consensus` |
+| `models` | 三個模型的 provider/id/label | ✅ |
+
+---
+
 ## 自訂
 
 ### 想換模型？
@@ -181,6 +239,24 @@
 3. 模型回的 JSON 格式跑掉（提高 maxTokens 或換更新版模型）
 
 進 Actions 分頁看具體錯誤訊息。
+
+### NVIDIA 卡住怎麼辦？
+預設 config 給 NVIDIA 主用的模型指定了 **fallback chain**（依序試）：
+
+```json
+"critic": {
+  "provider": "nvidia",
+  "id": "moonshotai/kimi-k2.6",
+  "fallbacks": [
+    { "provider": "nvidia", "id": "nvidia/nemotron-3-super-120b-a12b" },
+    { "provider": "groq",   "id": "meta-llama/llama-4-scout-17b-16e-instruct" }
+  ]
+}
+```
+
+主用兩次 timeout（共 ~2 分鐘）後自動切備胎 1，再失敗才切備胎 2。同時每輪間有 15 秒 TPM 緩衝（用 `INTER_ROUND_DELAY_MS=0 npm run debate` 可關閉）。
+
+要長期避開 NVIDIA：用 `config/all-nvidia.json` 反過來；或把三個模型都改 Groq。
 
 ---
 

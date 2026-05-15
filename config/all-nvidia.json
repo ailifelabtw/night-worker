@@ -73,31 +73,19 @@
   },
   "models": {
     "proposer": {
-      "provider": "groq",
-      "id": "meta-llama/llama-4-scout-17b-16e-instruct",
-      "label": "Llama 4 Scout（Groq・提案者）"
+      "provider": "nvidia",
+      "id": "moonshotai/kimi-k2.6",
+      "label": "Kimi K2.6（NVIDIA・提案者）"
     },
     "critic": {
       "provider": "nvidia",
-      "id": "moonshotai/kimi-k2.6",
-      "label": "Kimi K2.6（NVIDIA・評論者）",
-      "fallbacks": [
-        {
-          "provider": "nvidia",
-          "id": "nvidia/nemotron-3-super-120b-a12b",
-          "label": "Nemotron 3 Super 120B（NVIDIA・備胎 1）"
-        },
-        {
-          "provider": "groq",
-          "id": "meta-llama/llama-4-scout-17b-16e-instruct",
-          "label": "Llama 4 Scout（Groq・備胎 2，最終 fallback）"
-        }
-      ]
+      "id": "nvidia/nemotron-3-super-120b-a12b",
+      "label": "Nemotron 3 Super 120B（NVIDIA・評論者）"
     },
     "finalizer": {
-      "provider": "groq",
-      "id": "llama-3.3-70b-versatile",
-      "label": "Llama 3.3 70B（Groq・仲裁者）"
+      "provider": "nvidia",
+      "id": "moonshotai/kimi-k2.6",
+      "label": "Kimi K2.6（NVIDIA・仲裁者，二次溫度）"
     }
   }
 }

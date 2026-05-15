@@ -12,8 +12,9 @@ const KEYS = {
   openrouter: 'OPENROUTER_API_KEY',
 };
 
-const TIMEOUT_MS = 120000; // 120 秒
-const MAX_RETRIES = 3;
+const TIMEOUT_MS = Number(process.env.LLM_TIMEOUT_MS) || 60000;     // 預設 60 秒/次
+const MAX_RETRIES = Number(process.env.LLM_MAX_RETRIES) || 2;       // 預設 2 次（含首次）
+// → NVIDIA timeout 後總計約 60 + 3 + 60 = 123s 就會交給 fallback
 
 async function fetchWithTimeout(url, options, timeoutMs = TIMEOUT_MS) {
   const ctrl = new AbortController();

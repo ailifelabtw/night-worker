@@ -7,9 +7,14 @@ on:
   workflow_dispatch:
     inputs:
       config_path:
-        description: '使用哪份 config (預設 config/default.json)'
+        description: '使用哪份 config'
         required: false
         default: 'config/default.json'
+        type: choice
+        options:
+          - 'config/default.json'
+          - 'config/copy-writer.json'
+          - 'config/all-nvidia.json'
 
 permissions:
   contents: write
