@@ -57,7 +57,8 @@ jobs:
         run: |
           git config user.name "night-worker-bot"
           git config user.email "night-worker-bot@users.noreply.github.com"
-          git add results/
+          # results/*.json 被 .gitignore 擋（避免本機跑的個人結果不小心推），cron 強制 add
+          git add -f results/*.json
           if git diff --cached --quiet; then
             echo "Nothing to commit"
           else

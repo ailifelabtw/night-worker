@@ -8,7 +8,8 @@
     "debate": "node --env-file=.env scripts/debate.mjs",
     "debate:copy-writer": "CONFIG_PATH=config/copy-writer.json node --env-file=.env scripts/debate.mjs",
     "debate:all-nvidia": "CONFIG_PATH=config/all-nvidia.json node --env-file=.env scripts/debate.mjs",
-    "debate:no-env": "node scripts/debate.mjs"
+    "debate:no-env": "node scripts/debate.mjs",
+    "ui": "node --env-file=.env scripts/server.mjs"
   },
   "engines": {
     "node": ">=20"

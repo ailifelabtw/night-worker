@@ -1,0 +1,566 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🌙 夜間打工仔</title>
+<style>
+:root {
+  --bg: #faf9f5;
+  --panel: #ffffff;
+  --text: #1f1e1d;
+  --muted: #8a8780;
+  --border: #e8e6df;
+  --accent: #c96442;
+  --gold: #b88d3f;
+  --shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #262624;
+    --panel: #2f2e2c;
+    --text: #ecebe6;
+    --muted: #9d9a92;
+    --border: #3d3b37;
+    --accent: #d97757;
+    --gold: #d4a85c;
+    --shadow: 0 1px 3px rgba(0,0,0,0.3);
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; padding: 0;
+  background: var(--bg); color: var(--text);
+  font-family: ui-sans-serif, -apple-system, "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+  font-size: 16px; line-height: 1.6;
+}
+.container { max-width: 760px; margin: 0 auto; padding: 32px 20px 80px; }
+
+header { text-align: center; padding: 16px 0 24px; }
+header h1 { margin: 0 0 6px; font-size: 30px; font-weight: 600; letter-spacing: -0.5px; }
+header .tag { color: var(--muted); font-size: 13px; }
+header .sub { color: var(--text); font-size: 15px; margin-top: 12px; line-height: 1.6; }
+
+.banner {
+  background: var(--panel); border: 1px solid var(--border); border-radius: 14px;
+  padding: 18px 20px; margin: 24px 0; box-shadow: var(--shadow);
+  font-size: 14px; color: var(--text);
+}
+.banner .lbl { font-size: 11px; color: var(--muted); margin-bottom: 8px; letter-spacing: 0.5px; }
+
+.section { margin: 28px 0; }
+.section h2 { font-size: 14px; color: var(--muted); margin: 0 0 10px; font-weight: 500; letter-spacing: 0.4px; }
+
+textarea, select, input[type="text"] {
+  width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px;
+  background: var(--panel); color: var(--text); font-family: inherit; font-size: 15px; line-height: 1.5;
+  resize: vertical;
+}
+textarea:focus, select:focus, input:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+textarea { min-height: 100px; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.chip {
+  font-size: 12px; padding: 5px 11px; border: 1px solid var(--border); border-radius: 100px;
+  background: var(--panel); color: var(--muted); cursor: pointer; transition: all .15s;
+}
+.chip:hover { color: var(--text); border-color: var(--accent); }
+
+.modes { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 8px; }
+.mode {
+  display: flex; gap: 12px; padding: 12px 14px; border: 1px solid var(--border);
+  border-radius: 10px; background: var(--panel); cursor: pointer; transition: all .15s;
+}
+.mode:hover { border-color: var(--accent); }
+.mode input[type="radio"] { margin-top: 3px; }
+.mode .info strong { display: block; font-size: 14px; }
+.mode .info span { font-size: 12px; color: var(--muted); }
+.mode.active { border-color: var(--accent); background: rgba(201, 100, 66, 0.04); }
+
+button {
+  padding: 12px 22px; background: var(--accent); color: white; border: 0; border-radius: 10px;
+  font-size: 15px; font-weight: 500; cursor: pointer; transition: opacity .15s;
+}
+button:hover:not(:disabled) { opacity: 0.9; }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+button.secondary { background: transparent; color: var(--text); border: 1px solid var(--border); }
+
+.actions { display: flex; gap: 10px; justify-content: flex-end; align-items: center; margin-top: 14px; }
+.actions .hint { color: var(--muted); font-size: 12px; flex: 1; }
+
+.progress {
+  background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
+  padding: 18px 20px; margin: 16px 0;
+}
+.progress .step {
+  display: flex; gap: 12px; align-items: center; padding: 8px 0;
+  font-size: 14px; color: var(--muted);
+}
+.progress .step .ico { width: 20px; text-align: center; }
+.progress .step.active { color: var(--text); font-weight: 500; }
+.progress .step.done { color: var(--text); }
+.progress .step.error { color: var(--accent); }
+
+.pick {
+  background: var(--panel); border: 1px solid var(--border); border-radius: 14px;
+  padding: 22px; margin-bottom: 14px; box-shadow: var(--shadow); position: relative;
+}
+.pick.featured { border-color: var(--accent); border-width: 2px; }
+.pick .badge {
+  position: absolute; top: -12px; left: 18px;
+  background: var(--accent); color: white; padding: 4px 11px;
+  border-radius: 100px; font-size: 12px; font-weight: 600;
+}
+.pick.featured .badge { background: var(--gold); }
+.pick h3 { margin: 6px 0 10px; font-size: 19px; }
+.pick .hook {
+  background: var(--bg); border-left: 3px solid var(--accent);
+  padding: 11px 14px; border-radius: 6px; margin: 12px 0;
+  font-style: italic;
+}
+.pick .why { font-size: 14px; margin-top: 12px; color: var(--text); }
+.pick .scores {
+  display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; font-size: 12px; color: var(--muted);
+}
+.pick .scores span { background: var(--bg); padding: 4px 10px; border-radius: 6px; }
+.pick .scores .total { color: var(--accent); font-weight: 600; }
+
+.greeting {
+  background: var(--panel); border: 1px solid var(--border); border-radius: 14px;
+  padding: 18px 20px; margin: 16px 0;
+}
+.greeting .lbl { font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+
+details.full { margin-top: 22px; }
+details.full summary {
+  cursor: pointer; padding: 10px 14px;
+  background: var(--panel); border: 1px solid var(--border); border-radius: 10px;
+  font-size: 13px; color: var(--text); list-style: none;
+}
+details.full summary::after { content: ' ▼'; color: var(--muted); font-size: 10px; }
+details.full[open] summary::after { content: ' ▲'; }
+details.full pre {
+  background: var(--bg); padding: 12px; border-radius: 8px; margin-top: 8px;
+  overflow-x: auto; font-size: 11px; line-height: 1.5;
+  max-height: 320px; overflow-y: auto;
+}
+
+.cta-box {
+  background: linear-gradient(135deg, rgba(201, 100, 66, 0.06), rgba(184, 141, 63, 0.06));
+  border: 1px solid var(--border); border-radius: 14px;
+  padding: 22px; margin: 32px 0;
+}
+.cta-box h3 { margin: 0 0 10px; font-size: 17px; }
+.cta-box p { margin: 6px 0; font-size: 14px; }
+.cta-box a { color: var(--accent); text-decoration: underline; }
+.cta-box .ai-skill {
+  margin-top: 16px; padding: 14px 16px; background: var(--panel);
+  border-left: 3px solid var(--gold); border-radius: 6px;
+}
+.cta-box .ai-skill strong { color: var(--gold); }
+.cta-box ul { margin: 8px 0; padding-left: 22px; font-size: 14px; }
+.cta-box ul li { margin: 4px 0; }
+
+footer { text-align: center; margin-top: 40px; font-size: 12px; color: var(--muted); }
+footer a { color: var(--muted); text-decoration: underline; }
+
+.err {
+  background: rgba(201, 100, 66, 0.08); border: 1px solid var(--accent);
+  border-radius: 10px; padding: 14px 16px; margin: 16px 0;
+  color: var(--accent); font-size: 14px;
+}
+
+.spin {
+  display: inline-block; width: 12px; height: 12px;
+  border: 2px solid var(--muted); border-top-color: transparent;
+  border-radius: 50%; animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>🌙 夜間打工仔</h1>
+    <div class="tag">三個 AI 模型輪番辯論幫你想事情</div>
+    <div class="sub">丟給它一個任務 → 三個不同模型各從不同角度提案、互相評論、仲裁出最終建議。比單一 AI 答案多面向、不會死在第一個想法。</div>
+  </header>
+
+  <div class="banner" id="modeBanner">
+    <div class="lbl">⚡ PREVIEW 模式</div>
+    這是 demo 版，用 repo 維護者的 key、有用量限制。試試丟個任務感覺一下，覺得有用就往下看「想要自己的完整版」。
+  </div>
+
+  <!-- 表單 -->
+  <div id="formView">
+
+    <div class="section">
+      <h2>1. 想要夜間工人團隊幫你做什麼？</h2>
+      <textarea id="task" placeholder="譬如：我下週要面試 PM 職位，現在的履歷只有 reactive、ad-hoc 的事，想突顯策略能力"></textarea>
+      <div class="chips" id="taskExamples">
+        <span class="chip" data-task="幫我想明天 IG 可以發什麼主題，含完整貼文（hook、輪播、CTA）">💡 明天 IG 文案</span>
+        <span class="chip" data-task="幫我改履歷。我要應徵的職位是 [貼 JD 一段]，我現在的履歷重點有 [貼 3-5 條]，想突顯 [想突顯什麼]">📄 改履歷</span>
+        <span class="chip" data-task="我在猶豫 A、B、C 三個方案。A 是 [...]、B 是 [...]、C 是 [...]。我的限制是 [...]。幫我辯論一下">🤔 ABC 方案選擇</span>
+        <span class="chip" data-task="幫我寫 email 開場。收件人是 [...]、我想對方做 [...]、調性偏 [...]">📚 email/長文開場</span>
+        <span class="chip" data-task="下個月我想主推 [方向]，目前狀況 [...]、目標 [...]、限制 [...]。幫我評估幾條路線">🎯 下月主推方向</span>
+        <span class="chip" data-task="我想跟 [對方] 開口講 [這件事]，最在意他 [這個反應]。幫我想開口方式">💔 難開口的對話</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>2. 背景 / 限制 / 已知資料（選填）</h2>
+      <textarea id="bg" placeholder="任何讓三個模型工作得更準的資訊：你的紅線、過去類似嘗試結果、競品做過什麼、預算/時間限制⋯⋯沒有也 OK。"></textarea>
+    </div>
+
+    <div class="section">
+      <h2>3. 辯論模式</h2>
+      <div class="modes" id="modes">
+        <label class="mode active" data-mode="consensus">
+          <input type="radio" name="mode" value="consensus" checked>
+          <div class="info"><strong>共識型</strong><span>三方提案、評論、收斂出最佳解。適合「我不知道有哪些選項」</span></div>
+        </label>
+        <label class="mode" data-mode="adversarial">
+          <input type="radio" name="mode" value="adversarial">
+          <div class="info"><strong>對抗型</strong><span>一方樂觀提案、一方專挑翻車情境、第三方仲裁「值得冒險的」+「絕對別發的」。適合「我已經有方向但怕踩雷」</span></div>
+        </label>
+        <label class="mode" data-mode="copy_writer">
+          <input type="radio" name="mode" value="copy_writer">
+          <div class="info"><strong>文案職人型</strong><span>直接寫完整貼文（hook + 輪播 + CTA + Threads 縮寫）。適合「我要寫 IG / Threads / blog / 履歷 / email」</span></div>
+        </label>
+      </div>
+    </div>
+
+    <div class="actions">
+      <span class="hint">三輪辯論約 90-150 秒</span>
+      <button id="submit">開始辯論</button>
+    </div>
+
+  </div>
+
+  <!-- 結果 -->
+  <div id="resultView" style="display:none;">
+    <div class="progress" id="progress"></div>
+    <div id="result"></div>
+    <div class="actions">
+      <button class="secondary" id="reset">← 再跑一次</button>
+    </div>
+  </div>
+
+  <!-- CTA：想要自己的完整版 -->
+  <div class="cta-box">
+    <h3>🛠️ 想要真正威力強大的版本？</h3>
+    <p>這個 preview 用的是 repo 維護者的 key，每次任務都是「冷啟動」——模型不知道你是誰、你過去做過什麼、你的偏好、你的紅線。</p>
+    <p><strong>把 repo clone 下來、跟 Claude 講「幫我設定」，它會帶你裝完整版：</strong></p>
+    <ol>
+      <li>本機跑同樣的 UI（你的 key、用量無上限）</li>
+      <li>建立你的「<strong>長期人設檔案</strong>」（personal.json）—— 一次設好之後每次辯論都用</li>
+      <li>累積你的「<strong>參考檔案 / 資料來源</strong>」（過去爆款、決策原則、紅線）讓模型越用越懂你</li>
+    </ol>
+    <p style="margin-top:12px;">
+      → <a href="https://github.com/ailifelabtw/night-worker" target="_blank">GitHub: ailifelabtw/night-worker</a><br>
+      → clone 之後在資料夾跑 <code>claude</code> 開 Claude Code，跟它說「幫我設定」就好
+    </p>
+
+    <div class="ai-skill">
+      <strong>⚠️ 但 AI 真正的關鍵能力在這裡：</strong>
+      <p style="margin:6px 0;">把工具裝起來只是入場券。真正會讓 AI 為你工作 vs 一般人差在「**你怎麼設計 context**」：</p>
+      <ul>
+        <li>建立<strong>完整的人設</strong>（你是誰、受眾是誰、你的語氣、不能踩的紅線）</li>
+        <li>累積<strong>參考檔案</strong>（過去做過的、爆款 hook 範例、決策 history）</li>
+        <li>定義<strong>判斷規則</strong>（什麼叫好、什麼叫翻車、哪些指標決定）</li>
+        <li>整理<strong>可信資料來源</strong>（讓模型不要憑空想）</li>
+        <li><strong>持續優化辯論 prompt</strong>（看跑出來的結果回頭改 strategy）</li>
+      </ul>
+      <p style="margin:6px 0;">這些都要花時間建立、要不斷迭代。<strong>這是 AI 時代會跟一般使用者拉開很大差距的關鍵能力</strong>，強烈建議你自己鑽研、別只當 prompt 消費者。</p>
+    </div>
+  </div>
+
+  <footer>
+    🌙 <a href="https://github.com/ailifelabtw/night-worker" target="_blank">夜間打工仔</a> ・ MIT licensed
+  </footer>
+
+</div>
+
+<script>
+// ============================================================
+// 策略 prompt（前端負責 orchestrate 三輪呼叫）
+// ============================================================
+const RUBRIC = `打分標準（嚴格遵守，分數通膨會被人類發現）：
+- 9-10：史詩級
+- 8-9：很好
+- 7-8：還行
+- 6-7：普通
+- 5 以下：別做
+
+維度（每個 1-10）：hook 強度 / brand_fit / novelty / engagement / total = 平均`;
+
+function buildContext(task, bg) {
+  let s = `【使用者的任務】\n${task}`;
+  if (bg && bg.trim()) {
+    s += `\n\n【背景 / 限制 / 已知資料】\n${bg.trim()}`;
+  }
+  s += `\n\n你的工作：幫使用者把這個任務想清楚 / 寫好。不要憑空想——以使用者給的背景為主。`;
+  return s;
+}
+
+const STRATEGIES = {
+  consensus: {
+    label: '共識型',
+    round1: (ctx) => ({
+      system: `你是創意策略師。${ctx}\n\n提出 4 個不同方向的提案，每個附完整評分。\n${RUBRIC}\n\n輸出 JSON：{"proposals":[{"id":1,"title":"...","summary":"3-5 句說明這個方案","pros":["..."],"cons":["..."],"scores":{"hook":1-10,"brand_fit":1-10,"novelty":1-10,"engagement":1-10},"total":數字}]}`,
+      user: '請開始提案。',
+    }),
+    round2: (ctx, r1) => ({
+      system: `你是冷酷的內容分析師。${ctx}\n\n看完上一輪 4 個提案：\n1. 用同維度給每個打分（你可以更嚴格）\n2. 挑出 top 2，對它們做改寫\n${RUBRIC}\n\n輸出 JSON：{"my_scores":[{"id":1,"scores":{...},"total":數字,"comment":"..."}],"top_2_ids":[數字,數字],"revisions":[{"original_id":數字,"revised_title":"...","revised_summary":"...","what_changed":"...","new_scores":{...},"new_total":數字}]}`,
+      user: `Round 1：\n${JSON.stringify(r1, null, 2)}\n\n請評分、挑 top 2、改寫。`,
+    }),
+    round3: (ctx, r1, r2) => ({
+      system: `你是資深品牌經理，要拍板最終建議。${ctx}\n\n看完前兩輪：選 2 個最終提案（從 round1 原版 + round2 修訂版中選），第一名要說「為什麼這個值得做」。\n${RUBRIC}\n\n輸出 JSON：{"final_picks":[{"rank":1,"title":"...","summary":"...","why_this":"為什麼選這個（2-3 句）","final_scores":{...},"final_total":數字,"post_first":true}],"owner_message":"給使用者的訊息（3-4 句總結）"}`,
+      user: `Round 1：\n${JSON.stringify(r1, null, 2)}\n\nRound 2：\n${JSON.stringify(r2, null, 2)}\n\n請仲裁。`,
+    }),
+  },
+
+  adversarial: {
+    label: '對抗型',
+    round1: (ctx) => ({
+      system: `你是樂觀的策略企劃。${ctx}\n\n提案 4 個方案，盡量樂觀，因為下一輪會有人專門找你問題。每個附「為什麼會成功」的論據。\n${RUBRIC}\n\n輸出 JSON：{"proposals":[{"id":1,"title":"...","summary":"...","why_will_work":"2-3 句樂觀論據","scores":{...},"total":數字}]}`,
+      user: '請提案 4 個會成功的方案。',
+    }),
+    round2: (ctx, r1) => ({
+      system: `你是 red team 分析師。${ctx}\n\n對上一輪每個方案找出最壞情境：\n1. 翻車風險（具體）\n2. 隱藏的不對齊\n3. 競品 / 過去做過已經失敗的相似案例\n4. 災難打分\n\n誠實但不為反對而反對。\n\n輸出 JSON：{"attacks":[{"id":數字,"risk_summary":"1 句最大風險","failure_modes":["翻車情境 1","2"],"hidden_misfit":"...","saturation":"...","disaster_scores":{...},"disaster_total":數字,"verdict":"salvageable" 或 "kill"}]}`,
+      user: `Round 1：\n${JSON.stringify(r1, null, 2)}\n\n對每個方案找最壞情境。`,
+    }),
+    round3: (ctx, r1, r2) => ({
+      system: `你是冷靜的品牌總監，要在樂觀派跟悲觀派之間仲裁。${ctx}\n\n1. 選 2 個「即使有風險也值得做」的方案，每個標明風險 + 緩解策略\n2. 點名 1 個「絕對不要做」的，說清楚為什麼\n3. 給使用者一段訊息\n${RUBRIC}\n\n輸出 JSON：{"final_picks":[{"rank":1,"title":"...","summary":"...","main_risk":"...","mitigation":"...","final_total":數字,"post_first":true}],"killed":{"title":"...","why_killed":"..."},"owner_message":"訊息（3-4 句）"}`,
+      user: `Round 1：\n${JSON.stringify(r1, null, 2)}\n\nRound 2 紅隊：\n${JSON.stringify(r2, null, 2)}\n\n仲裁。`,
+    }),
+  },
+
+  copy_writer: {
+    label: '文案職人型',
+    round1: (ctx) => ({
+      system: `你是文案職人。${ctx}\n\n提案 2 個版本，每個都寫到「可以直接用」的完整度（hook + 主文 + CTA + 縮寫版）。\n\n輸出 JSON：{"proposals":[{"id":1,"title":"...","hook":"第一行 hook (30 字內)","body":"主文 (200-400 字)","cta":"CTA 段落","short_version":"縮寫版 (50-100 字，適合 Threads / email subject)","scores":{...},"total":數字}]}`,
+      user: '請提案 2 個完整版本。',
+    }),
+    round2: (ctx, r1) => ({
+      system: `你是冷酷的文案編輯。${ctx}\n\n針對每個提案找出文案缺陷並改寫：hook 強度、節奏、CTA 自然度、整體調性。改寫不要客氣。\n\n輸出 JSON：{"critiques":[{"id":數字,"hook_critique":"...","rhythm_critique":"...","cta_critique":"...","revised":{"hook":"更強的 hook","body":"改過的主文","cta":"改過的 CTA","short_version":"..."},"what_changed":"...","new_scores":{...},"new_total":數字}]}`,
+      user: `Round 1：\n${JSON.stringify(r1, null, 2)}\n\n改寫。`,
+    }),
+    round3: (ctx, r1, r2) => ({
+      system: `你是資深主編。${ctx}\n\n挑 1 個明天主用 + 1 個備胎。主用要產出「可直接複製貼上」最終版（hook + body + CTA + short_version）。\n\n輸出 JSON：{"final_picks":[{"rank":1,"post_first":true,"title":"...","ready_to_post":{"hook":"...","body":"...","cta":"...","short_version":"..."},"final_total":數字,"why_this_wins":"..."},{"rank":2,"post_first":false,"title":"...","summary_only":"備胎簡述","when_to_use":"什麼情況改用","final_total":數字}],"owner_message":"訊息","metrics_to_watch":["..."]}`,
+      user: `R1：\n${JSON.stringify(r1, null, 2)}\n\nR2：\n${JSON.stringify(r2, null, 2)}\n\n仲裁。`,
+    }),
+  },
+};
+
+// ============================================================
+// 模型配置（preview 模式固定一組穩定的 Groq + NVIDIA mix）
+// ============================================================
+const MODELS = {
+  proposer:  { provider: 'groq',   model: 'meta-llama/llama-4-scout-17b-16e-instruct', label: 'Llama 4 Scout (Groq)' },
+  critic:    { provider: 'nvidia', model: 'moonshotai/kimi-k2.6',                       label: 'Kimi K2.6 (NVIDIA)',
+               fallbacks: [
+                 { provider: 'nvidia', model: 'nvidia/nemotron-3-super-120b-a12b', label: 'Nemotron 3 Super (NVIDIA)' },
+                 { provider: 'groq',   model: 'meta-llama/llama-4-scout-17b-16e-instruct', label: 'Llama 4 Scout (Groq, 保底)' },
+               ] },
+  finalizer: { provider: 'groq',   model: 'llama-3.3-70b-versatile',                    label: 'Llama 3.3 70B (Groq)' },
+};
+
+// ============================================================
+// API 呼叫（永遠走 /api/chat 相對路徑，preview 跟本機共用）
+// ============================================================
+async function callChat({ provider, model, system, user, maxTokens = 3000, jsonMode = true }) {
+  const res = await fetch('/api/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      provider, model, system,
+      messages: [{ role: 'user', content: user }],
+      jsonMode, maxTokens,
+    }),
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`HTTP ${res.status}: ${text.slice(0, 200)}`);
+  }
+  const data = await res.json();
+  const content = data.choices?.[0]?.message?.content;
+  if (!content) throw new Error('Model returned no content');
+  return content;
+}
+
+async function callWithFallback(roleConfig, args) {
+  const chain = [roleConfig, ...(roleConfig.fallbacks || [])];
+  let lastErr;
+  for (let i = 0; i < chain.length; i++) {
+    try {
+      if (i > 0) updateStep(`切換備胎 ${i}：${chain[i].label}`, 'active');
+      return await callChat({ provider: chain[i].provider, model: chain[i].model, ...args });
+    } catch (e) {
+      lastErr = e;
+      if (i === chain.length - 1) throw e;
+    }
+  }
+  throw lastErr;
+}
+
+function tryJson(text) {
+  let cleaned = text.replace(/^```(?:json)?\s*/, '').replace(/\s*```$/, '').trim();
+  try { return JSON.parse(cleaned); }
+  catch {
+    const s = cleaned.indexOf('{'), e = cleaned.lastIndexOf('}');
+    if (s >= 0 && e > s) return JSON.parse(cleaned.slice(s, e + 1));
+    throw new Error('Cannot parse JSON: ' + text.slice(0, 200));
+  }
+}
+
+// ============================================================
+// UI 控制
+// ============================================================
+const $ = (s) => document.querySelector(s);
+const formView = $('#formView'), resultView = $('#resultView');
+
+document.querySelectorAll('.chip').forEach(chip => {
+  chip.addEventListener('click', () => { $('#task').value = chip.dataset.task; $('#task').focus(); });
+});
+document.querySelectorAll('.mode').forEach(mode => {
+  mode.addEventListener('click', () => {
+    document.querySelectorAll('.mode').forEach(m => m.classList.remove('active'));
+    mode.classList.add('active');
+    mode.querySelector('input').checked = true;
+  });
+});
+$('#reset').addEventListener('click', () => {
+  resultView.style.display = 'none';
+  formView.style.display = '';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+const steps = [];
+function setSteps(items) {
+  steps.length = 0;
+  steps.push(...items);
+  renderProgress();
+}
+function updateStep(label, status, atIndex = null) {
+  const i = atIndex !== null ? atIndex : steps.length - 1;
+  if (i >= 0 && steps[i]) { steps[i] = { label, status }; renderProgress(); }
+}
+function addStep(label, status) {
+  steps.push({ label, status });
+  renderProgress();
+}
+function renderProgress() {
+  const p = $('#progress');
+  p.innerHTML = steps.map(s => {
+    const ico = s.status === 'done' ? '✓' : s.status === 'error' ? '✗' : s.status === 'active' ? '<span class="spin"></span>' : '○';
+    return `<div class="step ${s.status}"><span class="ico">${ico}</span><span>${escapeHtml(s.label)}</span></div>`;
+  }).join('');
+}
+
+function escapeHtml(s) {
+  if (s == null) return '';
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+$('#submit').addEventListener('click', async () => {
+  const task = $('#task').value.trim();
+  const bg = $('#bg').value.trim();
+  const mode = document.querySelector('input[name="mode"]:checked').value;
+  if (!task) { alert('請描述要做的任務'); return; }
+
+  formView.style.display = 'none';
+  resultView.style.display = '';
+  $('#result').innerHTML = '';
+
+  const strategy = STRATEGIES[mode];
+  const ctx = buildContext(task, bg);
+
+  setSteps([
+    { label: `Round 1：${MODELS.proposer.label} 提案中...`, status: 'active' },
+  ]);
+
+  try {
+    const r1 = strategy.round1(ctx);
+    const r1Text = await callWithFallback(MODELS.proposer, { system: r1.system, user: r1.user });
+    const r1Json = tryJson(r1Text);
+    updateStep(`Round 1 ✓ ${MODELS.proposer.label}（${(r1Json.proposals || []).length} 個提案）`, 'done');
+
+    addStep(`Round 2：${MODELS.critic.label} 評論中...`, 'active');
+    const r2 = strategy.round2(ctx, r1Json);
+    const r2Text = await callWithFallback(MODELS.critic, { system: r2.system, user: r2.user, maxTokens: 4000 });
+    const r2Json = tryJson(r2Text);
+    updateStep(`Round 2 ✓ ${MODELS.critic.label}`, 'done');
+
+    addStep(`Round 3：${MODELS.finalizer.label} 仲裁中...`, 'active');
+    const r3 = strategy.round3(ctx, r1Json, r2Json);
+    const r3Text = await callWithFallback(MODELS.finalizer, { system: r3.system, user: r3.user });
+    const r3Json = tryJson(r3Text);
+    updateStep(`Round 3 ✓ ${MODELS.finalizer.label}`, 'done');
+
+    renderResult(r3Json, { round1: r1Json, round2: r2Json, round3: r3Json });
+  } catch (e) {
+    addStep(`失敗：${e.message}`, 'error');
+    $('#result').innerHTML = `<div class="err">❌ ${escapeHtml(e.message)}</div>`;
+  }
+});
+
+function renderResult(r3, allRounds) {
+  let html = '';
+  const picks = r3.final_picks || [];
+  if (r3.owner_message) {
+    html += `<div class="greeting"><div class="lbl">給你的訊息</div><div>${escapeHtml(r3.owner_message)}</div></div>`;
+  }
+  for (const p of picks) {
+    const featured = p.post_first || p.rank === 1;
+    const ready = p.ready_to_post;
+    const hook = ready?.hook || p.hook || '';
+    const body = ready?.body || '';
+    const cta = ready?.cta || '';
+    const short = ready?.short_version || '';
+    const summary = p.summary || p.summary_only || '';
+    html += `<div class="pick ${featured ? 'featured' : ''}">
+      <div class="badge">${featured ? '🏆 首選' : '#' + p.rank}</div>
+      <h3>${escapeHtml(p.title || p.topic || '(無標題)')}</h3>
+      ${hook ? `<div class="hook">"${escapeHtml(hook)}"</div>` : ''}
+      ${summary ? `<div>${escapeHtml(summary)}</div>` : ''}
+      ${body ? `<details style="margin-top:12px;"><summary>看完整主文</summary><div style="margin-top:10px;white-space:pre-wrap;">${escapeHtml(body)}</div></details>` : ''}
+      ${cta ? `<div style="margin-top:10px;font-size:13px;"><strong>CTA：</strong>${escapeHtml(cta)}</div>` : ''}
+      ${short ? `<div style="margin-top:6px;font-size:13px;"><strong>縮寫版：</strong>${escapeHtml(short)}</div>` : ''}
+      ${p.why_this || p.why_this_wins ? `<div class="why">💭 ${escapeHtml(p.why_this || p.why_this_wins)}</div>` : ''}
+      ${p.main_risk ? `<div class="why">⚠️ 主要風險：${escapeHtml(p.main_risk)}<br>緩解：${escapeHtml(p.mitigation || '')}</div>` : ''}
+      ${p.when_to_use ? `<div class="why">🔁 何時改用：${escapeHtml(p.when_to_use)}</div>` : ''}
+      <div class="scores">
+        ${p.final_scores ? `
+          <span>hook ${p.final_scores.hook ?? '-'}</span>
+          <span>brand ${p.final_scores.brand_fit ?? '-'}</span>
+          <span>novel ${p.final_scores.novelty ?? '-'}</span>
+          <span>engage ${p.final_scores.engagement ?? '-'}</span>` : ''}
+        ${p.final_total ? `<span class="total">總分 ${p.final_total}</span>` : ''}
+      </div>
+    </div>`;
+  }
+  if (r3.killed) {
+    html += `<div class="pick" style="opacity:0.6;border-style:dashed;">
+      <div class="badge" style="background:var(--muted);">🚫 別做</div>
+      <h3>${escapeHtml(r3.killed.title || r3.killed.topic)}</h3>
+      <div class="why">${escapeHtml(r3.killed.why_killed)}</div>
+    </div>`;
+  }
+  if (Array.isArray(r3.metrics_to_watch) && r3.metrics_to_watch.length) {
+    html += `<div class="greeting"><div class="lbl">📊 追蹤指標</div><ul style="margin:0;padding-left:18px;">${r3.metrics_to_watch.map(m => `<li>${escapeHtml(m)}</li>`).join('')}</ul></div>`;
+  }
+  html += `<details class="full"><summary>📜 看完整辯論過程（3 輪原始 JSON）</summary>
+    <pre>${escapeHtml(JSON.stringify(allRounds, null, 2))}</pre></details>`;
+  $('#result').innerHTML = html;
+}
+
+// 判斷是否在 preview 模式（看 hostname）—— 本機 localhost 不顯示 preview banner
+if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+  const banner = $('#modeBanner');
+  banner.innerHTML = `<div class="lbl">🏠 本機模式</div>用你 .env 裡的 API key，沒有用量限制。要改 brand voice / 累積參考檔案，記得編輯 <code>config/personal.json</code>（看 CLAUDE.md）。`;
+}
+</script>
+</body>
+</html>

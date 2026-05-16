@@ -1,0 +1,19 @@
+name = "night-worker-preview"
+main = "src/index.js"
+compatibility_date = "2025-05-01"
+
+[assets]
+directory = "./public"
+not_found_handling = "single-page-application"
+
+# 部署前要先設定兩個 secret（不會 commit 到 git）：
+#   npx wrangler secret put GROQ_API_KEY
+#   npx wrangler secret put NVIDIA_API_KEY
+#
+# 然後部署：
+#   npx wrangler deploy
+#
+# 之後想加 rate limit：開 KV、把 RATE_LIMIT_KV 寫進這裡
+# [[kv_namespaces]]
+# binding = "RATE_LIMIT_KV"
+# id = "..."

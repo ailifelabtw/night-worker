@@ -32,6 +32,17 @@
 
 ---
 
+## ⚡ 想先試試看？
+
+**Preview demo（用維護者的 key、有用量限制）**：
+👉 https://night-worker-preview.YOUR-ACCOUNT.workers.dev（部署後把這條連結改成實際網址）
+
+只要填個任務，點開始辯論。三個模型 90-150 秒後給你結果。
+
+覺得有用 → 看下面「想要自己的完整版」自己 clone。
+
+---
+
 ## 三種使用路徑
 
 ### 🎯 路徑 A：用 Claude Code 帶你裝（**最推薦，零工程背景也能**）
@@ -65,15 +76,18 @@ Claude 會自動建臨時 config、選辯論模式、跑、然後翻譯結果。
 
 ---
 
-### 路徑 B：本機指令列（會 npm 的）
+### 路徑 B：本機指令列／本機 UI（會 npm 的）
 
 ```bash
 git clone https://github.com/ailifelabtw/night-worker.git
 cd night-worker
 cp .env.example .env                       # 開 .env 把 GROQ_API_KEY / NVIDIA_API_KEY 填進去
 # ★ 開 config/default.json 把 (請填...) 的欄位改成你自己的 owner / brand_voice
-npm run debate                             # 預設共識型辯論
-npm run debate:copy-writer                 # 明天 IG 完整貼文模式
+
+npm run ui                                 # 開本機 UI：http://localhost:5174（用 .env 的 key、沒用量限制）
+# 或不想開瀏覽器：
+npm run debate                             # CLI 跑預設共識型辯論
+npm run debate:copy-writer                 # CLI 跑明天 IG 完整貼文模式
 ```
 
 **想保留自己的設定不要 push 到 git：** 另存 `config/personal.json`（已被 .gitignore），跑：
@@ -87,6 +101,23 @@ CONFIG_PATH=config/personal.json npm run debate
 ### 路徑 C：GitHub Actions 每晚自動跑（長期 set-and-forget）
 
 Fork repo → 設兩個 Secrets → 每天凌晨自動跑，早上看 GitHub Pages 結果頁。下面「5 分鐘設定步驟」走這條。
+
+### 路徑 D：把 Preview UI 部署到自己的 Cloudflare（給粉絲用）
+
+如果你想 host 一份 preview 給朋友 / 粉絲試用、用你的 key 不要他們自己拿：
+
+```bash
+cd worker
+npm install                                  # 第一次裝 wrangler
+npx wrangler login                           # 登入你的 Cloudflare 帳號
+npx wrangler secret put GROQ_API_KEY         # 貼你的 Groq key
+npx wrangler secret put NVIDIA_API_KEY       # 貼你的 NVIDIA key
+npx wrangler deploy                          # 部署
+```
+
+部署完會給你 `https://night-worker-preview.YOUR-SUBDOMAIN.workers.dev` 網址。把連結放回 README 最上面那條 Preview demo 線。
+
+⚠️ Preview 用你的 key，朋友每次跑都會吃你的免費 quota。Groq free tier 14.4K req/天、NVIDIA 看你方案。要加 rate limit 看 `worker/wrangler.toml` 的 KV 區塊註解。
 
 ---
 

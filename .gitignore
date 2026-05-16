@@ -8,3 +8,7 @@ node_modules/
 config/personal*.json
 config/runs/
 
+# 本機跑的辯論結果不上 git（GH Actions cron 跑的會用 git add -f 強制推）
+results/*.json
+
+
