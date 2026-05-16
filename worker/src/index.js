@@ -1,4 +1,4 @@
-// 夜間打工仔 preview backend
+// 夜間智囊團 preview backend
 // 部署：cd worker && npx wrangler deploy
 // 設 secret：npx wrangler secret put GROQ_API_KEY (再來一次設 NVIDIA_API_KEY)
 

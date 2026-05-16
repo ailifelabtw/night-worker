@@ -117,7 +117,7 @@ async function runRound(roundKey, modelKey, previousRounds) {
 
 async function main() {
   const startedAt = new Date().toISOString();
-  console.log(`🌙 夜間打工仔 - 開工 ${startedAt}`);
+  console.log(`🌙 夜間智囊團 - 開工 ${startedAt}`);
   console.log(`策略模式：${MODE}（${STRATEGY.description}）`);
 
   const results = {

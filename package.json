@@ -1,7 +1,7 @@
 {
   "name": "night-worker",
   "version": "0.1.0",
-  "description": "夜間打工仔 - 三個 AI 模型每晚輪班為你 brainstorm",
+  "description": "夜間智囊團 - 三個 AI 模型每晚輪班為你 brainstorm",
   "type": "module",
   "private": true,
   "scripts": {

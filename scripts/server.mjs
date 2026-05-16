@@ -103,7 +103,7 @@ const server = http.createServer(async (req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`🌙 夜間打工仔 UI: http://localhost:${PORT}`);
+  console.log(`🌙 夜間智囊團 UI: http://localhost:${PORT}`);
   console.log(`   API endpoint:    http://localhost:${PORT}/api/chat`);
   console.log(`   按 Ctrl+C 結束`);
 });
