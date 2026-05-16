@@ -290,7 +290,7 @@ footer a { color: var(--muted); text-decoration: underline; }
     </div>
 
     <div class="actions">
-      <span class="hint">三輪辯論約 90-150 秒</span>
+      <span class="hint" id="ctxCounter">三輪辯論約 90-150 秒</span>
       <button id="submit">開始辯論</button>
     </div>
 
@@ -494,6 +494,48 @@ document.querySelectorAll('.chip').forEach(chip => {
 });
 
 // ============================================================
+// 即時字數計算 + 額度警告（防止 context 超過模型上限後噴 error）
+// ============================================================
+// 粗估：1 中文字 ≈ 1.5 tokens、1 ASCII ≈ 0.25 tokens。最緊的模型是 Llama 4 Scout 131K tokens。
+// R3 還要塞 R1+R2 JSON 所以額外抓 buffer → 字數預算上限抓 200K 字。
+const CTX_GREEN = 50_000;
+const CTX_YELLOW = 100_000;
+const CTX_ORANGE = 150_000;
+const CTX_RED = 200_000;
+
+function totalChars() {
+  const ids = ['task', 'persona', 'refs', 'rules', 'sources'];
+  return ids.reduce((sum, id) => sum + ($('#' + id)?.value.length || 0), 0);
+}
+
+function updateCounter() {
+  const n = totalChars();
+  const el = $('#ctxCounter');
+  if (!el) return;
+  const k = (n / 1000).toFixed(n > 10000 ? 0 : 1);
+  let label, color;
+  if (n === 0)             { label = '三輪辯論約 90-150 秒'; color = 'var(--muted)'; }
+  else if (n < CTX_GREEN)  { label = `共 ~${k}K 字 ✓ 寬鬆`; color = 'var(--muted)'; }
+  else if (n < CTX_YELLOW) { label = `共 ~${k}K 字 · 還行`; color = 'var(--muted)'; }
+  else if (n < CTX_ORANGE) { label = `共 ~${k}K 字 ⚠ 開始多，會變慢`; color = 'var(--gold)'; }
+  else if (n < CTX_RED)    { label = `共 ~${k}K 字 ⚠ 接近上限，建議精簡`; color = 'var(--accent)'; }
+  else                     { label = `共 ~${k}K 字 ❌ 太多會跑不動`; color = 'var(--accent)'; }
+  el.textContent = label;
+  el.style.color = color;
+
+  const btn = $('#submit');
+  if (btn) {
+    btn.disabled = n >= CTX_RED;
+    btn.title = n >= CTX_RED ? '資料太多模型 context 會爆，刪一些再試' : '';
+  }
+}
+
+['task', 'persona', 'refs', 'rules', 'sources'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('input', updateCounter);
+});
+
+// ============================================================
 // 拖檔案 → 讀文字附到 textarea
 // 純文字：直接讀。docx：用 mammoth.js。pdf：用 pdfjs-dist。皆 CDN lazy load。
 // ============================================================
@@ -571,8 +613,10 @@ document.querySelectorAll('textarea.dropzone').forEach(ta => {
 
         // 把 loading tag 換成實際內容
         ta.value = ta.value.replace(loadingTag, `${sep}--- 檔案：${file.name}（${(text.length/1000).toFixed(1)}K 字）---\n${text}`);
+        updateCounter();
       } catch (err) {
         ta.value = ta.value.replace(/--- 讀取「[^」]+」中\.\.\. ---/g, '');
+        updateCounter();
         alert(err.message);
       }
     }
@@ -629,6 +673,16 @@ $('#submit').addEventListener('click', async () => {
   const mode = document.querySelector('input[name="mode"]:checked').value;
   if (!task) { alert('請描述要做的任務'); return; }
 
+  // 預檢字數，避免送出去才噴錯
+  const total = totalChars();
+  if (total >= CTX_RED) {
+    alert(`資料總共 ${(total/1000).toFixed(0)}K 字，超過模型 context 上限，跑不動。請刪一些再試。`);
+    return;
+  }
+  if (total >= CTX_ORANGE) {
+    if (!confirm(`資料 ${(total/1000).toFixed(0)}K 字接近模型上限，第 3 輪可能會 context 不夠。要繼續嗎？`)) return;
+  }
+
   formView.style.display = 'none';
   resultView.style.display = '';
   $('#result').innerHTML = '';
@@ -661,9 +715,27 @@ $('#submit').addEventListener('click', async () => {
     renderResult(r3Json, { round1: r1Json, round2: r2Json, round3: r3Json });
   } catch (e) {
     addStep(`失敗：${e.message}`, 'error');
-    $('#result').innerHTML = `<div class="err">❌ ${escapeHtml(e.message)}</div>`;
+    const friendly = humanizeError(e.message);
+    $('#result').innerHTML = `<div class="err">❌ ${escapeHtml(friendly)}</div>`;
   }
 });
+
+function humanizeError(msg) {
+  const m = String(msg || '');
+  if (/context.{0,20}(length|exceeded|too long|window)/i.test(m) || /maximum context length/i.test(m) || /token.{0,15}limit/i.test(m)) {
+    return '參考資料太多，模型 context 裝不下。建議：刪一些 📚 參考檔案 或 🔍 可信資料來源 的內容、或換成更短的版本（譬如只貼最近 3 篇而不是 10 篇）。';
+  }
+  if (/rate.{0,10}limit|429|TPM|tokens per minute/i.test(m)) {
+    return '免費 API 每分鐘額度滿了，等 60 秒再按一次「再跑一次」。';
+  }
+  if (/timeout|aborted|504/i.test(m)) {
+    return '上游 AI 商今天比較慢。已經自動切備胎還是失敗——按「再跑一次」通常就好了。';
+  }
+  if (/401|unauthorized|invalid.{0,5}key/i.test(m)) {
+    return 'API key 有問題（過期 / 沒設 / 沒額度）。如果你是部署者，檢查 .env 或 wrangler secret。';
+  }
+  return `跑失敗：${m}`;
+}
 
 function renderResult(r3, allRounds) {
   let html = '';
