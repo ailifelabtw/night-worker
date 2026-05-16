@@ -170,6 +170,23 @@ footer a { color: var(--muted); text-decoration: underline; }
   color: var(--accent); font-size: 14px;
 }
 
+.ctx-acc { margin: 28px 0; border: 1px solid var(--border); border-radius: 12px; background: var(--panel); }
+.ctx-acc > summary {
+  cursor: pointer; padding: 14px 18px; font-size: 14px; color: var(--text);
+  list-style: none; user-select: none;
+}
+.ctx-acc > summary::-webkit-details-marker { display: none; }
+.ctx-acc > summary::after { content: ' ▼'; color: var(--muted); font-size: 10px; float: right; }
+.ctx-acc[open] > summary::after { content: ' ▲'; }
+.ctx-acc[open] > summary { border-bottom: 1px solid var(--border); }
+.ctx-inner { padding: 16px 18px 18px; }
+.ctx-field { margin-bottom: 16px; }
+.ctx-field:last-child { margin-bottom: 0; }
+.ctx-field label { display: block; font-size: 13px; margin-bottom: 6px; color: var(--text); }
+.ctx-field .ctx-hint { color: var(--muted); font-size: 12px; margin-left: 8px; font-weight: 400; }
+.ctx-field textarea { min-height: 72px; }
+.dropzone.dragover { outline: 2px dashed var(--accent); outline-offset: -1px; background: rgba(201, 100, 66, 0.04); }
+
 .spin {
   display: inline-block; width: 12px; height: 12px;
   border: 2px solid var(--muted); border-top-color: transparent;
@@ -208,10 +225,34 @@ footer a { color: var(--muted); text-decoration: underline; }
       </div>
     </div>
 
-    <div class="section">
-      <h2>2. 背景 / 限制 / 已知資料（選填）</h2>
-      <textarea id="bg" placeholder="任何讓三個模型工作得更準的資訊：你的紅線、過去類似嘗試結果、競品做過什麼、預算/時間限制⋯⋯沒有也 OK。"></textarea>
-    </div>
+    <details class="ctx-acc">
+      <summary>
+        <span>2. 想要更精準？補 context（4 個欄位都選填，模型越懂你產出越準）</span>
+      </summary>
+      <div class="ctx-inner">
+
+        <div class="ctx-field">
+          <label>🎭 <strong>人設與紅線</strong><span class="ctx-hint">你是誰、做什麼、受眾是誰、不能踩的線</span></label>
+          <textarea class="dropzone" id="persona" placeholder="譬如：我是 AI 工具實測 KOL，IG 主經營，受眾 30-45 歲台灣上班族。語氣誠實直白、不打雞血。紅線：不接保健業配、不打 FOMO、不講靈性玄學。"></textarea>
+        </div>
+
+        <div class="ctx-field">
+          <label>📚 <strong>參考檔案 / 過去做過的</strong><span class="ctx-hint">範例、爆款 hook、決策 history——模型會學「文案 DNA」</span></label>
+          <textarea class="dropzone" id="refs" placeholder="貼幾段你過去爆款的 hook 原文 + 為什麼會爆。或拖 .md / .txt / .json / .csv 檔案進來。"></textarea>
+        </div>
+
+        <div class="ctx-field">
+          <label>📏 <strong>判斷規則</strong><span class="ctx-hint">什麼叫好 / 什麼叫翻車 / 哪些指標決定</span></label>
+          <textarea class="dropzone" id="rules" placeholder="譬如：能引發留言私訊 = 好；被嫌雞湯 / 沒人轉發 = 翻車；ROI < 2x 就跳過；發出 2 小時內互動率要 > 5%。"></textarea>
+        </div>
+
+        <div class="ctx-field">
+          <label>🔍 <strong>可信資料來源</strong><span class="ctx-hint">防止模型憑空想——貼數據、產業 fact、受眾調研、拖檔案</span></label>
+          <textarea class="dropzone" id="sources" placeholder="貼具體數字、產業 fact、受眾調研、競品近期動作。或拖檔案進來讓模型有素材可用。"></textarea>
+        </div>
+
+      </div>
+    </details>
 
     <div class="section">
       <h2>3. 辯論模式</h2>
@@ -296,12 +337,21 @@ const RUBRIC = `打分標準（嚴格遵守，分數通膨會被人類發現）�
 
 維度（每個 1-10）：hook 強度 / brand_fit / novelty / engagement / total = 平均`;
 
-function buildContext(task, bg) {
+function buildContext(task, ctx) {
   let s = `【使用者的任務】\n${task}`;
-  if (bg && bg.trim()) {
-    s += `\n\n【背景 / 限制 / 已知資料】\n${bg.trim()}`;
+  if (ctx.persona && ctx.persona.trim()) {
+    s += `\n\n【人設與紅線】\n${ctx.persona.trim()}`;
   }
-  s += `\n\n你的工作：幫使用者把這個任務想清楚 / 寫好。不要憑空想——以使用者給的背景為主。`;
+  if (ctx.refs && ctx.refs.trim()) {
+    s += `\n\n【參考檔案 / 過去做過的（這些是使用者實際的素材，提案時請學風格、別重複）】\n${ctx.refs.trim()}`;
+  }
+  if (ctx.rules && ctx.rules.trim()) {
+    s += `\n\n【判斷規則（什麼叫好 / 什麼叫翻車——評分跟仲裁要嚴格遵守）】\n${ctx.rules.trim()}`;
+  }
+  if (ctx.sources && ctx.sources.trim()) {
+    s += `\n\n【可信資料來源（數字、fact、調研——優先用這些，不要憑空想）】\n${ctx.sources.trim()}`;
+  }
+  s += `\n\n你的工作：幫使用者把這個任務想清楚 / 寫好。以上面提供的 context 為主，不要憑空編造。`;
   return s;
 }
 
@@ -425,6 +475,30 @@ const formView = $('#formView'), resultView = $('#resultView');
 document.querySelectorAll('.chip').forEach(chip => {
   chip.addEventListener('click', () => { $('#task').value = chip.dataset.task; $('#task').focus(); });
 });
+
+// Drag-and-drop file → 附到對應 textarea
+const ALLOWED_TYPES = /\.(txt|md|json|csv|tsv|html|xml|yml|yaml|log)$/i;
+document.querySelectorAll('textarea.dropzone').forEach(ta => {
+  ta.addEventListener('dragover', e => { e.preventDefault(); ta.classList.add('dragover'); });
+  ta.addEventListener('dragleave', () => ta.classList.remove('dragover'));
+  ta.addEventListener('drop', async e => {
+    e.preventDefault();
+    ta.classList.remove('dragover');
+    const files = Array.from(e.dataTransfer.files);
+    for (const file of files) {
+      if (!ALLOWED_TYPES.test(file.name)) {
+        alert(`只支援文字檔（.txt/.md/.json/.csv/.html 等）。「${file.name}」跳過——PDF/docx 請先手動轉文字再貼。`);
+        continue;
+      }
+      if (file.size > 200000) {
+        if (!confirm(`${file.name} 有 ${(file.size/1024).toFixed(0)}KB，會吃不少 token。確定要附上？`)) continue;
+      }
+      const text = await file.text();
+      const sep = ta.value.trim() ? '\n\n' : '';
+      ta.value += `${sep}--- 檔案：${file.name} ---\n${text}`;
+    }
+  });
+});
 document.querySelectorAll('.mode').forEach(mode => {
   mode.addEventListener('click', () => {
     document.querySelectorAll('.mode').forEach(m => m.classList.remove('active'));
@@ -467,7 +541,12 @@ function escapeHtml(s) {
 
 $('#submit').addEventListener('click', async () => {
   const task = $('#task').value.trim();
-  const bg = $('#bg').value.trim();
+  const ctxFields = {
+    persona: $('#persona')?.value || '',
+    refs:    $('#refs')?.value || '',
+    rules:   $('#rules')?.value || '',
+    sources: $('#sources')?.value || '',
+  };
   const mode = document.querySelector('input[name="mode"]:checked').value;
   if (!task) { alert('請描述要做的任務'); return; }
 
@@ -476,7 +555,7 @@ $('#submit').addEventListener('click', async () => {
   $('#result').innerHTML = '';
 
   const strategy = STRATEGIES[mode];
-  const ctx = buildContext(task, bg);
+  const ctx = buildContext(task, ctxFields);
 
   setSteps([
     { label: `Round 1：${MODELS.proposer.label} 提案中...`, status: 'active' },

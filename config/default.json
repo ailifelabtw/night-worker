@@ -1,5 +1,5 @@
 {
-  "_README": "⚠️ 這是通用範本。第一次使用請改下面 owner / topic_context / audience / brand_voice 等欄位成你自己的。改完跑 npm run debate。要保留自己的設定不被 git push 出去，請另存 config/personal.json（已被 .gitignore）。",
+  "_README": "通用範本。請改下面欄位成你自己的，改完跑 npm run debate。要保留設定不被 push 出去，另存 config/personal.json（已被 .gitignore）。\n\n📐 欄位心智模型（跟 UI 的 4 桶 context 對應）：\n  🎭 人設與紅線    → owner / topic_context / audience / brand_voice / avoid_topics\n  📚 參考檔案      → preferred_hook_types / recent_hits / topic_categories_track_record\n  📏 判斷規則      → diversity_mandate / ideal_post_anatomy / expansion_zones / rounds.score_threshold\n  🔍 可信資料來源  → current_focus（每次任務的特定資料）/ cta_keyword_options\n\n第 5 條「持續優化辯論 prompt」是改 scripts/strategies.mjs——進階使用者才動。",
 
   "owner": "（請填你的名字或自稱，譬如：小明、Coach Lin、林先生）",
   "topic_context": "（請填你的領域 / 定位 1-2 句。範例：『AI 工具實測 KOL，主經營 IG 跟部落格，定位「不用寫程式也能用 AI」』）",

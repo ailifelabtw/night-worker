@@ -1,5 +1,5 @@
 {
-  "_README": "⚠️ 通用範本。同 default.json 但 debate_mode = copy_writer（直接寫完整貼文）。請改 owner / topic_context 等欄位成你自己的。",
+  "_README": "通用範本。同 default.json 但 debate_mode = copy_writer（直接寫完整貼文）。請改下面欄位成你自己的。欄位對應 UI 的 4 桶 context：🎭 人設(owner/topic_context/audience/brand_voice/avoid_topics) ｜ 📚 參考(preferred_hook_types/recent_hits) ｜ 📏 規則(diversity_mandate/ideal_post_anatomy) ｜ 🔍 資料(current_focus/cta_keyword_options)。",
 
   "owner": "（請填你的名字）",
   "topic_context": "（請填你的領域 / 定位）",

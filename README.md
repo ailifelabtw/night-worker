@@ -233,7 +233,18 @@ npx wrangler deploy                          # 部署
 
 ## System prompt 吃哪些 input？
 
-全部寫在 `config/*.json`。哪個欄位影響什麼：
+全部寫在 `config/*.json`。**核心心智模型是 4 桶 context**（UI 也用同樣 4 桶）：
+
+| 桶 | UI 欄位 | config 欄位對應 |
+|---|---|---|
+| 🎭 **人設與紅線** | 你是誰、受眾、不能踩的線 | `owner` / `topic_context` / `audience` / `brand_voice` / `avoid_topics` |
+| 📚 **參考檔案** | 過去做過的、爆款 hook、決策 history | `preferred_hook_types` / `recent_hits` / `topic_categories_track_record` |
+| 📏 **判斷規則** | 什麼叫好、什麼叫翻車 | `diversity_mandate` / `ideal_post_anatomy` / `expansion_zones` / `rounds.score_threshold` |
+| 🔍 **可信資料來源** | 防止模型憑空想 | `current_focus`（每次任務的特定資料）/ `cta_keyword_options` / 自己拖檔案的內容 |
+
+第 5 項「**持續優化辯論 prompt**」是改 [`scripts/strategies.mjs`](scripts/strategies.mjs) 裡 4 種辯論模式的 prompt——進階使用者才動，看跑出來的結果回頭微調。
+
+完整欄位細節：
 
 | 欄位 | 用途 | 必填？ |
 |---|---|---|
