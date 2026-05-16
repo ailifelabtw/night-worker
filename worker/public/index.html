@@ -42,9 +42,13 @@ header .tag { color: var(--muted); font-size: 13px; }
 header .sub { color: var(--text); font-size: 15px; margin-top: 12px; line-height: 1.6; }
 
 .banner {
-  background: var(--panel); border: 1px solid var(--border); border-radius: 14px;
-  padding: 18px 20px; margin: 24px 0; box-shadow: var(--shadow);
+  background: linear-gradient(135deg, rgba(201, 100, 66, 0.07), rgba(184, 141, 63, 0.07));
+  border: 1px solid rgba(201, 100, 66, 0.25);
+  border-left: 4px solid var(--accent);
+  border-radius: 12px;
+  padding: 16px 20px; margin: 24px 0;
   font-size: 14px; color: var(--text);
+  line-height: 1.65;
 }
 .banner .lbl { font-size: 11px; color: var(--muted); margin-bottom: 8px; letter-spacing: 0.5px; }
 
@@ -205,7 +209,7 @@ footer a { color: var(--muted); text-decoration: underline; }
   </header>
 
   <div class="banner" id="modeBanner">
-    這是 demo 版，可以免費試試看。覺得有用、想自己長期用，往下捲到「想要真正威力強大的版本？」那段。
+    這個只是快速試用的 Demo 版，建議在 Claude Code 裡面按自己的狀況客製化，才會有更好的效果喔！
   </div>
 
   <!-- 表單 -->
