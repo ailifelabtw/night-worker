@@ -36,6 +36,8 @@
 
 ### 🎯 路徑 A：用 Claude Code 帶你裝（**最推薦，零工程背景也能**）
 
+> **⚠️ 用對版本**：要用 **Claude Code**（命令列）或 **Claude Desktop 的 Code 模式**。**不要用 Cowork / Chat 模式**——那些沙箱環境擋了對外打 API，會卡在跑第一次測試那關（git clone 沒問題，但 `npm run debate` 跑不起來）。
+
 ```bash
 git clone https://github.com/ailifelabtw/night-worker.git
 cd night-worker
