@@ -1,0 +1,278 @@
+{
+  "date": "2026-05-16",
+  "started_at": "2026-05-16T19:14:21.943Z",
+  "config_snapshot": {
+    "debate_mode": "consensus",
+    "strategy_description": "共識型：提案 → 評論挑選 → 仲裁。預設模式，廣撒網收斂",
+    "topic_context": "（請填你的領域 / 定位 1-2 句。範例：『AI 工具實測 KOL，主經營 IG 跟部落格，定位「不用寫程式也能用 AI」』）",
+    "models": {
+      "proposer": {
+        "provider": "groq",
+        "id": "meta-llama/llama-4-scout-17b-16e-instruct",
+        "label": "Llama 4 Scout（Groq・提案者）"
+      },
+      "critic": {
+        "provider": "nvidia",
+        "id": "moonshotai/kimi-k2.6",
+        "label": "Kimi K2.6（NVIDIA・評論者）",
+        "fallbacks": [
+          {
+            "provider": "nvidia",
+            "id": "nvidia/nemotron-3-super-120b-a12b",
+            "label": "Nemotron 3 Super 120B（NVIDIA・備胎 1）"
+          },
+          {
+            "provider": "nvidia",
+            "id": "deepseek-ai/deepseek-v4-pro",
+            "label": "DeepSeek V4 Pro（NVIDIA・備胎 2，慢但 1T 等級）",
+            "timeoutMs": 90000
+          },
+          {
+            "provider": "groq",
+            "id": "meta-llama/llama-4-scout-17b-16e-instruct",
+            "label": "Llama 4 Scout（Groq・最終保底）"
+          }
+        ]
+      },
+      "finalizer": {
+        "provider": "groq",
+        "id": "llama-3.3-70b-versatile",
+        "label": "Llama 3.3 70B（Groq・仲裁者）"
+      }
+    },
+    "current_focus": null
+  },
+  "rounds": {
+    "round1": {
+      "proposals": [
+        {
+          "id": 1,
+          "zone": "ai-tools",
+          "topic": "我用AI生成圖片做行銷素材，結果...",
+          "hook": "其實我以前也不會用AI畫圖，直到發現這個工具...",
+          "angle": "分享使用AI生成圖片的經驗和心得",
+          "scores": {
+            "hook": 8,
+            "brand_fit": 9,
+            "novelty": 7,
+            "engagement": 8
+          },
+          "total": 8
+        },
+        {
+          "id": 2,
+          "zone": "expansion",
+          "topic": "為什麼我不再相信「成功學」？",
+          "hook": "大多數人不知道，成功學背後的真相...",
+          "angle": "分享對成功學的反思和個人看法",
+          "scores": {
+            "hook": 9,
+            "brand_fit": 9,
+            "novelty": 9,
+            "engagement": 9
+          },
+          "total": 9
+        },
+        {
+          "id": 3,
+          "zone": "ai-tools",
+          "topic": "AI工具實測：10個小時學會用AI寫文案",
+          "hook": "我以前也覺得AI很難用，直到我發現這個工具...",
+          "angle": "分享使用AI工具的實測結果和心得",
+          "scores": {
+            "hook": 8,
+            "brand_fit": 9,
+            "novelty": 6,
+            "engagement": 8
+          },
+          "total": 7.75
+        },
+        {
+          "id": 4,
+          "zone": "expansion",
+          "topic": "個案敘事：如何用真實個案講職業迷茫",
+          "hook": "其實我以前也經歷過職業迷茫，直到我發現...",
+          "angle": "分享真實個案的經歷和心得",
+          "scores": {
+            "hook": 8,
+            "brand_fit": 9,
+            "novelty": 8,
+            "engagement": 8
+          },
+          "total": 8.25
+        },
+        {
+          "id": 5,
+          "zone": "ai-tools",
+          "topic": "用AI生成影片做社群行銷，結果...",
+          "hook": "大多數人不知道，AI生成影片的驚人效果...",
+          "angle": "分享使用AI生成影片的經驗和心得",
+          "scores": {
+            "hook": 9,
+            "brand_fit": 9,
+            "novelty": 8,
+            "engagement": 9
+          },
+          "total": 8.75
+        }
+      ]
+    },
+    "round2": {
+      "my_scores_for_all": [
+        {
+          "id": 1,
+          "scores": {
+            "hook": 8,
+            "brand_fit": 9,
+            "novelty": 7,
+            "engagement": 8
+          },
+          "total": 8
+        },
+        {
+          "id": 2,
+          "scores": {
+            "hook": 9,
+            "brand_fit": 9,
+            "novelty": 9,
+            "engagement": 9
+          },
+          "total": 9
+        },
+        {
+          "id": 3,
+          "scores": {
+            "hook": 8,
+            "brand_fit": 9,
+            "novelty": 6,
+            "engagement": 8
+          },
+          "total": 7.75
+        },
+        {
+          "id": 4,
+          "scores": {
+            "hook": 8,
+            "brand_fit": 9,
+            "novelty": 8,
+            "engagement": 8
+          },
+          "total": 8.25
+        },
+        {
+          "id": 5,
+          "scores": {
+            "hook": 9,
+            "brand_fit": 9,
+            "novelty": 8,
+            "engagement": 9
+          },
+          "total": 8.75
+        }
+      ],
+      "top_3_ids": [
+        2,
+        5,
+        4
+      ],
+      "revisions": [
+        {
+          "original_id": 1,
+          "revised_topic": "我用AI生成圖片做行銷素材，結果慘不忍睹...",
+          "revised_hook": "其實我以前也試過用AI畫圖，但結果讓我很失望...",
+          "what_changed": "加強了失敗的描述，增強了讀者的共鳴",
+          "new_scores": {
+            "hook": 9,
+            "brand_fit": 9,
+            "novelty": 8,
+            "engagement": 9
+          },
+          "new_total": 8.75
+        },
+        {
+          "original_id": 3,
+          "revised_topic": "AI工具實測：10個小時學會用AI寫文案，但...",
+          "revised_hook": "我以前也覺得AI很難用，直到我發現這個工具，但結果...",
+          "what_changed": "加強了失敗的描述，增強了讀者的共鳴",
+          "new_scores": {
+            "hook": 9,
+            "brand_fit": 9,
+            "novelty": 7,
+            "engagement": 9
+          },
+          "new_total": 8.5
+        },
+        {
+          "original_id": 4,
+          "revised_topic": "個案敘事：如何用真實個案講職業迷茫，但...",
+          "revised_hook": "其實我以前也經歷過職業迷茫，但我發現...",
+          "what_changed": "加強了失敗的描述，增強了讀者的共鳴",
+          "new_scores": {
+            "hook": 9,
+            "brand_fit": 9,
+            "novelty": 9,
+            "engagement": 9
+          },
+          "new_total": 9
+        }
+      ]
+    },
+    "round3": {
+      "final_picks": [
+        {
+          "rank": 1,
+          "zone": "expansion",
+          "topic": "為什麼我不再相信「成功學」？",
+          "hook": "大多數人不知道，成功學背後的真相...",
+          "angle": "分享對成功學的反思和個人看法",
+          "final_scores": {
+            "hook": 9,
+            "brand_fit": 9,
+            "novelty": 9,
+            "engagement": 9
+          },
+          "final_total": 9,
+          "why_this": "這個主題非常適合擁有者目前的品牌語音和定位，同時也具有很高的新穎度和互動潛力。能夠引發讀者的共鳴和討論。",
+          "post_first": true
+        },
+        {
+          "rank": 2,
+          "zone": "expansion",
+          "topic": "個案敘事：如何用真實個案講職業迷茫，但...",
+          "hook": "其實我以前也經歷過職業迷茫，但我發現...",
+          "angle": "分享真實個案的經歷和心得",
+          "final_scores": {
+            "hook": 9,
+            "brand_fit": 9,
+            "novelty": 9,
+            "engagement": 9
+          },
+          "final_total": 9,
+          "why_this": "這個主題能夠提供真實的個案和心得，讀者可以很容易地產生共鳴和連結。同時，也具有很高的新穎度和互動潛力。",
+          "post_first": false
+        },
+        {
+          "rank": 3,
+          "zone": "ai-tools",
+          "topic": "用AI生成影片做社群行銷，結果...",
+          "hook": "大多數人不知道，AI生成影片的驚人效果...",
+          "angle": "分享使用AI生成影片的經驗和心得",
+          "final_scores": {
+            "hook": 9,
+            "brand_fit": 9,
+            "novelty": 8,
+            "engagement": 9
+          },
+          "final_total": 8.75,
+          "why_this": "這個主題能夠展示AI生成影片的驚人效果，同時也具有很高的新穎度和互動潛力。能夠吸引讀者的注意力和興趣。",
+          "post_first": false
+        }
+      ],
+      "owner_message": "早安！根據前兩輪的評論和修改，最終選出了三個主題，分別是「為什麼我不再相信『成功學』？」、「個案敘事：如何用真實個案講職業迷茫，但...」和「用AI生成影片做社群行銷，結果...」。這三個主題都具有很高的新穎度和互動潛力，能夠吸引讀者的注意力和興趣。首先發布「為什麼我不再相信『成功學』？」，然後依次發布另外兩個主題。"
+    }
+  },
+  "error": null,
+  "success": true,
+  "finished_at": "2026-05-16T19:22:06.869Z",
+  "duration_seconds": 465
+}
