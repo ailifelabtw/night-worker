@@ -2,6 +2,11 @@ name = "night-worker-preview"
 main = "src/index.js"
 compatibility_date = "2025-05-01"
 
+# 自訂 domain（CF 上 ailifelab.co zone 需要已加進 account）
+routes = [
+  { pattern = "night.ailifelab.co", custom_domain = true }
+]
+
 [assets]
 directory = "./public"
 not_found_handling = "single-page-application"
