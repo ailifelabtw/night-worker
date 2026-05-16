@@ -47,9 +47,15 @@
           "label": "Nemotron 3 Super 120B（NVIDIA・備胎 1）"
         },
         {
+          "provider": "nvidia",
+          "id": "deepseek-ai/deepseek-v4-pro",
+          "label": "DeepSeek V4 Pro（NVIDIA・備胎 2，慢但 1T 等級）",
+          "timeoutMs": 90000
+        },
+        {
           "provider": "groq",
           "id": "meta-llama/llama-4-scout-17b-16e-instruct",
-          "label": "Llama 4 Scout（Groq・備胎 2）"
+          "label": "Llama 4 Scout（Groq・最終保底）"
         }
       ]
     },

@@ -26,7 +26,7 @@ async function fetchWithTimeout(url, options, timeoutMs = TIMEOUT_MS) {
   }
 }
 
-export async function chatCompletion({ provider, model, system, messages, jsonMode = false, maxTokens = 2000 }) {
+export async function chatCompletion({ provider, model, system, messages, jsonMode = false, maxTokens = 2000, timeoutMs = TIMEOUT_MS }) {
   const url = ENDPOINTS[provider];
   const keyName = KEYS[provider];
   const apiKey = process.env[keyName];
@@ -56,7 +56,7 @@ export async function chatCompletion({ provider, model, system, messages, jsonMo
           'Authorization': `Bearer ${apiKey}`,
         },
         body: JSON.stringify(body),
-      });
+      }, timeoutMs);
 
       // Retry only on transient errors
       if (!res.ok) {

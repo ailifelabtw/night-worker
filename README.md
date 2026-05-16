@@ -280,10 +280,10 @@ npx wrangler deploy                          # 部署
 - `qwen/qwen3-32b`
 
 **NVIDIA（provider: `nvidia`）：**
-- `moonshotai/kimi-k2.6`
-- `deepseek-ai/deepseek-v4-pro`
-- `z-ai/glm-5.1`
-- `nvidia/nemotron-3-super-120b-a12b`
+- `moonshotai/kimi-k2.6` — 預設 critic，2026-05 實測 SWE-Bench 跟 Opus 4.6 平手
+- `nvidia/nemotron-3-super-120b-a12b` — 預設 critic fallback 1
+- `deepseek-ai/deepseek-v4-pro` — fallback 2，1T MoE 等級但 ~50s/輪偏慢，要設 `timeoutMs: 90000`
+- `z-ai/glm-5.1` — 在 NVIDIA 上太慢，不建議
 
 完整清單去 [build.nvidia.com](https://build.nvidia.com) 跟 [console.groq.com/docs/models](https://console.groq.com/docs/models) 看。
 

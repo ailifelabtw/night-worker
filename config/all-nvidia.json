@@ -84,8 +84,9 @@
     },
     "finalizer": {
       "provider": "nvidia",
-      "id": "moonshotai/kimi-k2.6",
-      "label": "Kimi K2.6（NVIDIA・仲裁者，二次溫度）"
+      "id": "deepseek-ai/deepseek-v4-pro",
+      "label": "DeepSeek V4 Pro（NVIDIA・仲裁者，~50s/輪但 1T 等級）",
+      "timeoutMs": 90000
     }
   }
 }

@@ -58,7 +58,7 @@ const server = http.createServer(async (req, res) => {
   try { body = await readJsonBody(req); }
   catch { return send(res, 400, JSON.stringify({ error: 'invalid JSON body' })); }
 
-  const { provider, model, system, messages, jsonMode, maxTokens } = body;
+  const { provider, model, system, messages, jsonMode, maxTokens, timeoutMs } = body;
   const endpoint = ENDPOINTS[provider];
   if (!endpoint) return send(res, 400, JSON.stringify({ error: `unknown provider: ${provider}` }));
 
@@ -82,7 +82,7 @@ const server = http.createServer(async (req, res) => {
   if (jsonMode) upstreamBody.response_format = { type: 'json_object' };
 
   const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), 60000);
+  const timer = setTimeout(() => ctrl.abort(), Math.min(timeoutMs || 60000, 120000));
   let upstream;
   try {
     upstream = await fetch(endpoint, {

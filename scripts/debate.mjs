@@ -80,7 +80,7 @@ async function callWithFallback(model, args) {
       if (i > 0) {
         console.log(`  ⚠ 切換備胎 ${i}/${chain.length - 1}：${m.label}`);
       }
-      return await chatCompletion({ provider: m.provider, model: m.id, ...args });
+      return await chatCompletion({ provider: m.provider, model: m.id, ...args, ...(m.timeoutMs ? { timeoutMs: m.timeoutMs } : {}) });
     } catch (e) {
       lastErr = e;
       const isLast = i === chain.length - 1;

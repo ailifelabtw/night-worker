@@ -46,7 +46,7 @@ export default {
       return jsonResp({ error: 'invalid JSON body' }, 400);
     }
 
-    const { provider, model, system, messages, jsonMode, maxTokens } = body;
+    const { provider, model, system, messages, jsonMode, maxTokens, timeoutMs } = body;
     const endpoint = ENDPOINTS[provider];
     if (!endpoint) return jsonResp({ error: `unknown provider: ${provider}` }, 400);
 
@@ -68,9 +68,9 @@ export default {
     };
     if (jsonMode) upstreamBody.response_format = { type: 'json_object' };
 
-    // 60 秒 timeout，免得 worker 撐到 cf 上限
+    // 預設 60s timeout，slow model（譬如 DeepSeek）可在 body 傳 timeoutMs 拉長
     const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 60000);
+    const timer = setTimeout(() => ctrl.abort(), Math.min(timeoutMs || 60000, 90000));
 
     let upstream;
     try {
@@ -85,7 +85,7 @@ export default {
       });
     } catch (e) {
       clearTimeout(timer);
-      const msg = e.name === 'AbortError' ? `${provider} timeout (60s)` : `${provider} fetch failed: ${e.message}`;
+      const msg = e.name === 'AbortError' ? `${provider} timeout` : `${provider} fetch failed: ${e.message}`;
       return jsonResp({ error: msg }, 504);
     }
     clearTimeout(timer);

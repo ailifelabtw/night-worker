@@ -426,11 +426,13 @@ const STRATEGIES = {
 // ============================================================
 // 模型配置（preview 模式固定一組穩定的 Groq + NVIDIA mix）
 // ============================================================
+// Preview 上 DeepSeek V4 Pro 不放在 MODELS — CF Workers 免費 tier 對 subrequest 約 30s 上限，
+// DeepSeek 在 NVIDIA 上一輪要 50s 會被切掉。本機跑（CLI）沒這限制，CLI configs 有 DeepSeek。
 const MODELS = {
   proposer:  { provider: 'groq',   model: 'meta-llama/llama-4-scout-17b-16e-instruct', label: 'Llama 4 Scout (Groq)' },
   critic:    { provider: 'nvidia', model: 'moonshotai/kimi-k2.6',                       label: 'Kimi K2.6 (NVIDIA)',
                fallbacks: [
-                 { provider: 'nvidia', model: 'nvidia/nemotron-3-super-120b-a12b', label: 'Nemotron 3 Super (NVIDIA)' },
+                 { provider: 'nvidia', model: 'nvidia/nemotron-3-super-120b-a12b',     label: 'Nemotron 3 Super (NVIDIA)' },
                  { provider: 'groq',   model: 'meta-llama/llama-4-scout-17b-16e-instruct', label: 'Llama 4 Scout (Groq, 保底)' },
                ] },
   finalizer: { provider: 'groq',   model: 'llama-3.3-70b-versatile',                    label: 'Llama 3.3 70B (Groq)' },
@@ -439,7 +441,7 @@ const MODELS = {
 // ============================================================
 // API 呼叫（永遠走 /api/chat 相對路徑，preview 跟本機共用）
 // ============================================================
-async function callChat({ provider, model, system, user, maxTokens = 3000, jsonMode = true }) {
+async function callChat({ provider, model, system, user, maxTokens = 3000, jsonMode = true, timeoutMs }) {
   const res = await fetch('/api/chat', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -447,6 +449,7 @@ async function callChat({ provider, model, system, user, maxTokens = 3000, jsonM
       provider, model, system,
       messages: [{ role: 'user', content: user }],
       jsonMode, maxTokens,
+      ...(timeoutMs ? { timeoutMs } : {}),
     }),
   });
   if (!res.ok) {
@@ -465,7 +468,7 @@ async function callWithFallback(roleConfig, args) {
   for (let i = 0; i < chain.length; i++) {
     try {
       if (i > 0) updateStep(`切換備胎 ${i}：${chain[i].label}`, 'active');
-      return await callChat({ provider: chain[i].provider, model: chain[i].model, ...args });
+      return await callChat({ provider: chain[i].provider, model: chain[i].model, ...args, ...(chain[i].timeoutMs ? { timeoutMs: chain[i].timeoutMs } : {}) });
     } catch (e) {
       lastErr = e;
       if (i === chain.length - 1) throw e;
