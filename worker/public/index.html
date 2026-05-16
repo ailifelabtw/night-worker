@@ -257,10 +257,11 @@ footer a { color: var(--muted); text-decoration: underline; }
       <li>建立你的「<strong>長期人設檔案</strong>」（personal.json）—— 一次設好之後每次辯論都用</li>
       <li>累積你的「<strong>參考檔案 / 資料來源</strong>」（過去爆款、決策原則、紅線）讓模型越用越懂你</li>
     </ol>
-    <p style="margin-top:12px;">
-      → <a href="https://github.com/ailifelabtw/night-worker" target="_blank">GitHub: ailifelabtw/night-worker</a><br>
-      → clone 之後在資料夾跑 <code>claude</code> 開 Claude Code，跟它說「幫我設定」就好
-    </p>
+    <p style="margin-top:14px;margin-bottom:8px;">→ <a href="https://github.com/ailifelabtw/night-worker" target="_blank">GitHub: ailifelabtw/night-worker</a></p>
+    <p style="margin:8px 0;font-size:13px;color:var(--muted);">複製下面這段，貼到你的 Claude Code（命令列 <code>claude</code> 或 Claude Desktop 的 <strong>Code 模式</strong>，不要用 Cowork 會卡在 API 那關）：</p>
+    <pre style="background:var(--bg);padding:14px 16px;border-radius:8px;font-size:13px;line-height:1.6;white-space:pre-wrap;border:1px solid var(--border);margin:6px 0;">我要安裝夜間打工仔：https://github.com/ailifelabtw/night-worker
+
+幫我 clone 到 ~/dev/，然後讀裡面的 CLAUDE.md，按照「情境 1」的 onboarding SOP 帶我設定。我是非工程背景，你動手檢查環境、跑指令，需要我給的資訊（API key 之類）就停下來問。設定完幫我開 UI（npm run ui）。</pre>
 
     <div class="ai-skill">
       <strong>⚠️ 但 AI 真正的關鍵能力在這裡：</strong>
