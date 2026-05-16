@@ -184,7 +184,7 @@ footer a { color: var(--muted); text-decoration: underline; }
 .ctx-field:last-child { margin-bottom: 0; }
 .ctx-field label { display: block; font-size: 13px; margin-bottom: 6px; color: var(--text); }
 .ctx-field .ctx-hint { color: var(--muted); font-size: 12px; margin-left: 8px; font-weight: 400; }
-.ctx-field textarea { min-height: 72px; }
+.ctx-field textarea { min-height: 120px; }
 .dropzone.dragover { outline: 2px dashed var(--accent); outline-offset: -1px; background: rgba(201, 100, 66, 0.04); }
 
 .spin {
@@ -205,8 +205,7 @@ footer a { color: var(--muted); text-decoration: underline; }
   </header>
 
   <div class="banner" id="modeBanner">
-    <div class="lbl">⚡ PREVIEW 模式</div>
-    這是 demo 版，用 repo 維護者的 key、有用量限制。試試丟個任務感覺一下，覺得有用就往下看「想要自己的完整版」。
+    這是 demo 版，可以免費試試看。覺得有用、想自己長期用，往下捲到「想要真正威力強大的版本？」那段。
   </div>
 
   <!-- 表單 -->
@@ -232,23 +231,41 @@ footer a { color: var(--muted); text-decoration: underline; }
       <div class="ctx-inner">
 
         <div class="ctx-field">
-          <label>🎭 <strong>人設與紅線</strong><span class="ctx-hint">你是誰、做什麼、受眾是誰、不能踩的線</span></label>
-          <textarea class="dropzone" id="persona" placeholder="譬如：我是 AI 工具實測 KOL，IG 主經營，受眾 30-45 歲台灣上班族。語氣誠實直白、不打雞血。紅線：不接保健業配、不打 FOMO、不講靈性玄學。"></textarea>
+          <label>🎭 <strong>人設與紅線</strong><span class="ctx-hint">你是誰、做什麼、想要什麼、不能踩的線</span></label>
+          <textarea class="dropzone" id="persona" placeholder="直接打字描述就好。譬如：我做行銷企劃 5 年，最近想轉去新創公司、看重學習空間。紅線：不接受長期加班、不做客戶服務角色。
+
+也可以拖檔案進來（履歷自傳.docx、個人介紹.pdf、自我盤點.md⋯⋯）"></textarea>
         </div>
 
         <div class="ctx-field">
-          <label>📚 <strong>參考檔案 / 過去做過的</strong><span class="ctx-hint">範例、爆款 hook、決策 history——模型會學「文案 DNA」</span></label>
-          <textarea class="dropzone" id="refs" placeholder="貼幾段你過去爆款的 hook 原文 + 為什麼會爆。或拖 .md / .txt / .json / .csv 檔案進來。"></textarea>
+          <label>📚 <strong>參考檔案 / 過去做過的</strong><span class="ctx-hint">過去做過、想當範本參考的東西——讓模型學你的風格、不憑空亂寫</span></label>
+          <textarea class="dropzone" id="refs" placeholder="貼或拖過去類似的東西當參考。譬如：
+
+  • 改履歷 → 拖以前的履歷.docx、JD.pdf 進來
+  • 寫貼文 → 貼幾篇過去寫過的貼文、或拖 先前做過的貼文.md
+  • 寫提案 → 拖 過去做過的提案.docx
+  • 不知道貼什麼 → 留空也可以"></textarea>
         </div>
 
         <div class="ctx-field">
-          <label>📏 <strong>判斷規則</strong><span class="ctx-hint">什麼叫好 / 什麼叫翻車 / 哪些指標決定</span></label>
-          <textarea class="dropzone" id="rules" placeholder="譬如：能引發留言私訊 = 好；被嫌雞湯 / 沒人轉發 = 翻車；ROI < 2x 就跳過；發出 2 小時內互動率要 > 5%。"></textarea>
+          <label>📏 <strong>判斷規則</strong><span class="ctx-hint">什麼叫做好、什麼算翻車</span></label>
+          <textarea class="dropzone" id="rules" placeholder="用人話講你希望的標準。譬如：
+
+  • 寫履歷 → 要能突顯領導力、不要列太多細節操作
+  • 寫貼文 → 能引發留言私訊算好；被人覺得在賣慘 = 翻車
+  • 選方案 → 預算超過 5 萬就跳過；需要兼職超過 3 個月不考慮
+
+也可以拖 評估標準.md 之類的檔案"></textarea>
         </div>
 
         <div class="ctx-field">
-          <label>🔍 <strong>可信資料來源</strong><span class="ctx-hint">防止模型憑空想——貼數據、產業 fact、受眾調研、拖檔案</span></label>
-          <textarea class="dropzone" id="sources" placeholder="貼具體數字、產業 fact、受眾調研、競品近期動作。或拖檔案進來讓模型有素材可用。"></textarea>
+          <label>🔍 <strong>可信資料來源</strong><span class="ctx-hint">提供具體事實 / 數據，防止模型亂編</span></label>
+          <textarea class="dropzone" id="sources" placeholder="貼具體的數字、別人說過的話、調查結果、會影響決策的資訊。或拖檔案進來，譬如：
+
+  • 公司年報.pdf、產業報告.pdf
+  • 訪談筆記.docx、客戶回饋.csv
+  • 競品分析.md
+（支援 .pdf / .docx / .txt / .md / .csv / .json；Excel 請先存成 .csv）"></textarea>
         </div>
 
       </div>
@@ -476,8 +493,63 @@ document.querySelectorAll('.chip').forEach(chip => {
   chip.addEventListener('click', () => { $('#task').value = chip.dataset.task; $('#task').focus(); });
 });
 
-// Drag-and-drop file → 附到對應 textarea
-const ALLOWED_TYPES = /\.(txt|md|json|csv|tsv|html|xml|yml|yaml|log)$/i;
+// ============================================================
+// 拖檔案 → 讀文字附到 textarea
+// 純文字：直接讀。docx：用 mammoth.js。pdf：用 pdfjs-dist。皆 CDN lazy load。
+// ============================================================
+const TEXT_TYPES = /\.(txt|md|json|csv|tsv|html|xml|yml|yaml|log)$/i;
+const DOCX_TYPE  = /\.docx$/i;
+const PDF_TYPE   = /\.pdf$/i;
+
+let mammothPromise, pdfjsPromise;
+function loadMammoth() {
+  if (!mammothPromise) {
+    mammothPromise = new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js';
+      s.onload = () => resolve(window.mammoth);
+      s.onerror = () => reject(new Error('mammoth.js 載入失敗（檢查網路）'));
+      document.head.appendChild(s);
+    });
+  }
+  return mammothPromise;
+}
+async function loadPdfJs() {
+  if (!pdfjsPromise) {
+    pdfjsPromise = (async () => {
+      const mod = await import('https://cdn.jsdelivr.net/npm/pdfjs-dist@4.7.76/build/pdf.min.mjs');
+      mod.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.7.76/build/pdf.worker.min.mjs';
+      return mod;
+    })();
+  }
+  return pdfjsPromise;
+}
+
+async function extractText(file) {
+  if (TEXT_TYPES.test(file.name)) {
+    return await file.text();
+  }
+  if (DOCX_TYPE.test(file.name)) {
+    const mammoth = await loadMammoth();
+    const buf = await file.arrayBuffer();
+    const { value } = await mammoth.extractRawText({ arrayBuffer: buf });
+    return value;
+  }
+  if (PDF_TYPE.test(file.name)) {
+    const pdfjs = await loadPdfJs();
+    const buf = await file.arrayBuffer();
+    const pdf = await pdfjs.getDocument({ data: buf }).promise;
+    const pages = [];
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      pages.push(content.items.map(it => it.str).join(' '));
+    }
+    return pages.join('\n\n');
+  }
+  throw new Error(`「${file.name}」格式不支援。可以拖：.txt / .md / .json / .csv / .docx / .pdf（Excel 請先存成 .csv）`);
+}
+
 document.querySelectorAll('textarea.dropzone').forEach(ta => {
   ta.addEventListener('dragover', e => { e.preventDefault(); ta.classList.add('dragover'); });
   ta.addEventListener('dragleave', () => ta.classList.remove('dragover'));
@@ -486,16 +558,23 @@ document.querySelectorAll('textarea.dropzone').forEach(ta => {
     ta.classList.remove('dragover');
     const files = Array.from(e.dataTransfer.files);
     for (const file of files) {
-      if (!ALLOWED_TYPES.test(file.name)) {
-        alert(`只支援文字檔（.txt/.md/.json/.csv/.html 等）。「${file.name}」跳過——PDF/docx 請先手動轉文字再貼。`);
-        continue;
+      try {
+        if (file.size > 2_000_000) {
+          if (!confirm(`「${file.name}」有 ${(file.size/1024/1024).toFixed(1)} MB，會吃很多 token、可能爆 model context。確定要附？`)) continue;
+        }
+        // 顯示 loading
+        const sep = ta.value.trim() ? '\n\n' : '';
+        const loadingTag = `${sep}--- 讀取「${file.name}」中... ---`;
+        ta.value += loadingTag;
+
+        const text = await extractText(file);
+
+        // 把 loading tag 換成實際內容
+        ta.value = ta.value.replace(loadingTag, `${sep}--- 檔案：${file.name}（${(text.length/1000).toFixed(1)}K 字）---\n${text}`);
+      } catch (err) {
+        ta.value = ta.value.replace(/--- 讀取「[^」]+」中\.\.\. ---/g, '');
+        alert(err.message);
       }
-      if (file.size > 200000) {
-        if (!confirm(`${file.name} 有 ${(file.size/1024).toFixed(0)}KB，會吃不少 token。確定要附上？`)) continue;
-      }
-      const text = await file.text();
-      const sep = ta.value.trim() ? '\n\n' : '';
-      ta.value += `${sep}--- 檔案：${file.name} ---\n${text}`;
     }
   });
 });
@@ -636,10 +715,10 @@ function renderResult(r3, allRounds) {
   $('#result').innerHTML = html;
 }
 
-// 判斷是否在 preview 模式（看 hostname）—— 本機 localhost 不顯示 preview banner
+// 本機跑（localhost）就把 banner 整個拿掉，免得使用者看不懂
 if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
   const banner = $('#modeBanner');
-  banner.innerHTML = `<div class="lbl">🏠 本機模式</div>用你 .env 裡的 API key，沒有用量限制。要改 brand voice / 累積參考檔案，記得編輯 <code>config/personal.json</code>（看 CLAUDE.md）。`;
+  if (banner) banner.style.display = 'none';
 }
 </script>
 </body>
