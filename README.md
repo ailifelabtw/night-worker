@@ -18,23 +18,52 @@
 
 ---
 
-## 兩種使用路徑
+## 三種使用路徑
 
-**路徑 A：GitHub Actions 每晚自動跑（推薦長期用）**
-Fork → 設兩個 Secrets → 每天凌晨自動跑，早上起來看結果。下面「5 分鐘設定步驟」走這條。
+### 🎯 路徑 A：用 Claude Code 帶你裝（**最推薦，零工程背景也能**）
 
-**路徑 B：本機跑一次看效果（30 秒，不用碰 GitHub Actions）**
 ```bash
 git clone https://github.com/ailifelabtw/night-worker.git
 cd night-worker
-cp .env.example .env       # 開 .env 把兩個 key 填進去
-npm run debate             # 跑一次，結果寫進 results/YYYY-MM-DD.json
+claude                # 開 Claude Code（沒裝？去 https://claude.com/code 載）
 ```
 
-或要直接跑「明天 IG 主題＋完整文案」demo 模式：
+開了之後跟它說一句話就好：
+
+> 「幫我設定這個工具」
+
+Claude 會幫你：
+1. 檢查 Node 環境
+2. 帶你去拿兩個免費 API key（提供連結 + 步驟）
+3. 把 key 安全寫進 `.env`
+4. 跑第一次測試
+5. 把結果翻成人話講給你聽
+
+之後想討論任何事就直接跟 Claude 講：
+
+> 「我今天在猶豫要不要接這個業配，幫我辯論一下」
+> 「我明天 IG 要發什麼？」
+> 「幫我評估這三個方案哪個最值得做」
+
+Claude 會自動建臨時 config、選辯論模式、跑、然後翻譯結果。詳細 SOP 在 [`CLAUDE.md`](CLAUDE.md)。
+
+---
+
+### 路徑 B：本機指令列（會 npm 的）
+
 ```bash
-npm run debate:copy-writer
+git clone https://github.com/ailifelabtw/night-worker.git
+cd night-worker
+cp .env.example .env       # 開 .env 把 GROQ_API_KEY / NVIDIA_API_KEY 填進去
+npm run debate             # 預設共識型辯論
+npm run debate:copy-writer # 明天 IG 完整貼文模式
 ```
+
+---
+
+### 路徑 C：GitHub Actions 每晚自動跑（長期 set-and-forget）
+
+Fork repo → 設兩個 Secrets → 每天凌晨自動跑，早上看 GitHub Pages 結果頁。下面「5 分鐘設定步驟」走這條。
 
 ---
 
