@@ -1,0 +1,2 @@
+# 這個資料夾會放每次辯論的結果（YYYY-MM-DD.json + latest.json）
+# 第一次跑 npm run debate 後會自動產生

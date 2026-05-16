@@ -3,3 +3,8 @@ node_modules/
 .DS_Store
 .env
 .env.local
+
+# 個人 config 不上 git（保留你自己的 brand voice / recent_hits 在本機）
+config/personal*.json
+config/runs/
+

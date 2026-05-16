@@ -35,16 +35,32 @@ ls node_modules 2>/dev/null | head -1  # 看裝了沒
 
 **安全注意**：使用者把 key 貼給你時，**用 Edit 工具寫進 `.env`**，**不要 echo 或顯示在訊息裡**。
 
-### Step 3 — 跑一次測試
+### Step 3 — **先設定人設**（重要！）
+
+`config/default.json` 跟 `config/copy-writer.json` 是**通用範本**，欄位裡面是 `(請填...)` 的 placeholder。直接跑會出來亂七八糟的東西。
+
+問使用者：
+- 「你的名字 / 自稱怎麼稱呼？」
+- 「你在做什麼？主要受眾是誰？」（1-2 句帶過就好）
+- 「你想要的語氣風格是？」（譬如：誠實直白 / 專業冷靜 / 幽默自嘲 / 激勵正向⋯⋯）
+- 「你不想碰什麼主題？」（譬如：政治、保健業配、靈性玄學）
+
+把回答整理進 `config/default.json` 的對應欄位（用 Edit 工具一個個改）。如果他想保留這份設定不被 push 到 git 上，另存為 `config/personal.json`（已被 .gitignore），之後跑用 `CONFIG_PATH=config/personal.json npm run debate`。
+
+其他欄位（`recent_hits`, `topic_categories_track_record`, `expansion_zones`, `preferred_hook_types`）可以先留空或寫一兩個範例，跑幾次有更多素材再來補。
+
+### Step 4 — 跑一次測試
 ```bash
 npm run debate:copy-writer
+# 或如果用 personal.json：
+# CONFIG_PATH=config/personal.json npm run debate
 ```
 - 順利 → 跑 90-150 秒，結果寫進 `results/YYYY-MM-DD.json`
 - NVIDIA timeout → fallback chain 會自動接管，這正常
 - Groq 429 → 等 60 秒讓 TPM bucket 恢復後再試
 - 任何錯誤 → 看 `cat results/YYYY-MM-DD.json` 的 `error` 欄位
 
-### Step 4 — 解釋結果
+### Step 5 — 解釋結果
 **幫使用者讀 `results/latest.json`**：
 - `rounds.round3.final_picks` 是最終建議
 - `rounds.round3.owner_message` 是給使用者的早安訊息

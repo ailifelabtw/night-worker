@@ -54,9 +54,16 @@ Claude 會自動建臨時 config、選辯論模式、跑、然後翻譯結果。
 ```bash
 git clone https://github.com/ailifelabtw/night-worker.git
 cd night-worker
-cp .env.example .env       # 開 .env 把 GROQ_API_KEY / NVIDIA_API_KEY 填進去
-npm run debate             # 預設共識型辯論
-npm run debate:copy-writer # 明天 IG 完整貼文模式
+cp .env.example .env                       # 開 .env 把 GROQ_API_KEY / NVIDIA_API_KEY 填進去
+# ★ 開 config/default.json 把 (請填...) 的欄位改成你自己的 owner / brand_voice
+npm run debate                             # 預設共識型辯論
+npm run debate:copy-writer                 # 明天 IG 完整貼文模式
+```
+
+**想保留自己的設定不要 push 到 git：** 另存 `config/personal.json`（已被 .gitignore），跑：
+
+```bash
+CONFIG_PATH=config/personal.json npm run debate
 ```
 
 ---
