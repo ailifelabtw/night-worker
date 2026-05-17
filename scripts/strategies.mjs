@@ -3,19 +3,23 @@
 // 把所有 prompt 工程集中在這裡，方便對照不同模式。
 
 const RUBRIC = `打分標準（嚴格遵守，分數通膨會被人類發現）：
-- 9-10：史詩級，預期破過去最佳互動率
-- 8-9：很好，預期穩定爆
-- 7-8：還行，可發但不會炸
-- 6-7：普通，不如不發
-- 5 以下：別發
+- 9-10：史詩級
+- 8-9：很好
+- 7-8：還行
+- 6-7：普通
+- 5 以下：別做
 
-評分維度（每個 1-10）：
-1. hook 強度（前 1-2 行能不能讓人停手）
-2. 與品牌契合（符合 brand voice + 不踩 avoid_topics）
-3. 新穎程度（這個角度有沒有被講爛）
-4. 互動潛力（會引發留言、分享、儲存）
+評分維度（重要！動態）：
+- 如果 config 的 current_focus / rules 給了具體判斷標準 → 從規則裡萃取 3-5 個可打分維度
+- 沒給 → 你自己依任務類型挑 3-5 個適合維度：
+  - 寫貼文／文案 → hook 強度 / brand_fit / novelty / engagement
+  - 改履歷 → 相關性 / 突顯亮點 / 誠實度 / 可信度
+  - 感情／兩難 → 自我尊重 / 長期幸福 / 可逆性 / 對他人影響 / 直覺強度
+  - ABC 方案 → 可行性 / 成本效益 / 風險 / 跟目標契合度
+  - email／提案開場 → 收件人接受度 / 清晰度 / 行動力觸發
 
-total = 4 個維度平均`;
+每個維度 1-10，total = 平均（最高 10）。
+R2 / R3 必須沿用 R1 選出的 scoring_dimensions，不要換維度。`;
 
 // ---------------------------------------------------------------
 // 策略 1：consensus（共識型，預設）
@@ -45,7 +49,7 @@ ${RUBRIC}
       "topic": "主題標題（10-25 字）",
       "hook": "第一行 hook（30 字內）",
       "angle": "切入角度的 1 句解釋",
-      "scores": {"hook": 數字, "brand_fit": 數字, "novelty": 數字, "engagement": 數字},
+      "scores": {"<維度 1>": 數字, "<維度 2>": 數字, "<維度 3>": 數字, "<維度 4>": 數字},
       "total": 數字
     }
   ]
@@ -60,7 +64,7 @@ ${RUBRIC}
   round2: ({ context, previousRounds }) => ({
     system: `你是冷酷的內容分析師。你會看到另一個模型的 5 個主題提案，你的工作：
 
-1. 用同樣的 4 維度給每個提案打分（你可能比原模型嚴格）
+1. 沿用 Round 1 選定的 scoring_dimensions 給每個提案打分（你可能比原模型嚴格）
 2. 從 5 個裡挑出你覺得最有潛力的 3 個
 3. 對被挑中的 3 個，給具體修改建議
 
@@ -153,7 +157,7 @@ ${RUBRIC}
       "hook": "第一行 hook",
       "angle": "切入角度",
       "why_will_explode": "為什麼預期會爆（2-3 句樂觀論據）",
-      "scores": {"hook": 數字, "brand_fit": 數字, "novelty": 數字, "engagement": 數字},
+      "scores": {"<維度 1>": 數字, "<維度 2>": 數字, "<維度 3>": 數字, "<維度 4>": 數字},
       "total": 數字
     }
   ]
@@ -169,7 +173,7 @@ ${RUBRIC}
 1. 翻車風險（會被罵 / 沒人理 / 招來雜訊留言的具體原因）
 2. 隱藏的品牌不契合（brand voice 沒看到的破綻）
 3. 競品 / 相似 KOL 已經做過、會被覺得抄
-4. 給「災難版打分」（hook / brand_fit / novelty / engagement，每個 1-10，但這次是悲觀視角）
+4. 給「災難版打分」（沿用 R1 的 scoring_dimensions，每個 1-10，但這次是悲觀視角）
 
 不要客氣，但也不要為反對而反對 — 有些主題真的沒大問題就誠實說。
 
@@ -184,7 +188,7 @@ ${context}
       "specific_failure_modes": ["翻車情境 1", "情境 2"],
       "brand_misfit_check": "有沒有偷踩 avoid_topics 或語氣不對",
       "saturation_check": "這個角度有沒有被講爛 / 哪個 KOL 講過",
-      "disaster_scores": {"hook": 數字, "brand_fit": 數字, "novelty": 數字, "engagement": 數字},
+      "disaster_scores": {"<同 R1 維度>": 數字},
       "disaster_total": 數字,
       "verdict": "salvageable" 或 "kill"
     }
@@ -361,7 +365,7 @@ ${context}
       "threads_short": "Threads 版本縮寫（80-120 字，可以更直接、更脆弱）",
       "cta_keyword": "留言關鍵字（單一短詞如 LINE / 工具 / 免費）",
       "comment_reply_template": "Sky AI 看到關鍵字後私訊的開場（1-2 句，帶 ailifelab 文章連結）",
-      "scores": {"hook": 數字, "brand_fit": 數字, "novelty": 數字, "engagement": 數字},
+      "scores": {"<維度 1>": 數字, "<維度 2>": 數字, "<維度 3>": 數字, "<維度 4>": 數字},
       "total": 數字
     }
   ]

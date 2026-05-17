@@ -365,7 +365,18 @@ const RUBRIC = `打分標準（嚴格遵守，分數通膨會被人類發現）�
 - 6-7：普通
 - 5 以下：別做
 
-維度（每個 1-10）：hook 強度 / brand_fit / novelty / engagement / total = 平均`;
+維度（重要！）：
+- 如果使用者在「判斷規則」欄位給了具體標準 → 從規則裡萃取 3-5 個可打分的維度
+- 如果沒給 → 你自己根據任務類型挑 3-5 個適合的維度，譬如：
+  - 寫貼文／文案 → hook 強度 / brand_fit / novelty / engagement
+  - 改履歷 → 相關性 / 突顯亮點 / 誠實度 / 可信度
+  - 感情／兩難 → 自我尊重 / 長期幸福 / 可逆性 / 對他人影響 / 直覺強度
+  - ABC 方案 → 可行性 / 成本效益 / 風險 / 跟目標契合度
+  - email／提案開場 → 收件人接受度 / 清晰度 / 行動力觸發
+
+每個維度 1-10，total = 平均（不是加總，最多 10 分）。
+
+R2 / R3 必須沿用 R1 選出的維度，不要換。`;
 
 function buildContext(task, ctx) {
   let s = `【使用者的任務】\n${task}`;
@@ -389,48 +400,48 @@ const STRATEGIES = {
   consensus: {
     label: '共識型',
     round1: (ctx) => ({
-      system: `你是創意策略師。${ctx}\n\n提出 4 個不同方向的提案，每個附完整評分。\n${RUBRIC}\n\n輸出 JSON：{"proposals":[{"id":1,"title":"...","summary":"3-5 句說明這個方案","pros":["..."],"cons":["..."],"scores":{"hook":1-10,"brand_fit":1-10,"novelty":1-10,"engagement":1-10},"total":數字}]}`,
+      system: `你是創意策略師。${ctx}\n\n第一步：決定打分維度（看任務類型 + 使用者規則，挑 3-5 個適合的）。\n第二步：提出 4 個不同方向的提案，每個用同樣維度打分。\n\n${RUBRIC}\n\n輸出 JSON：{"scoring_dimensions":["維度 1","維度 2","維度 3","維度 4"],"dimensions_rationale":"為什麼選這幾個維度（1 句）","proposals":[{"id":1,"title":"...","summary":"3-5 句說明這個方案","pros":["..."],"cons":["..."],"scores":{"維度 1":數字,"維度 2":數字,"維度 3":數字,"維度 4":數字},"total":數字}]}`,
       user: '請開始提案。',
     }),
     round2: (ctx, r1) => ({
-      system: `你是冷酷的內容分析師。${ctx}\n\n看完上一輪 4 個提案：\n1. 用同維度給每個打分（你可以更嚴格）\n2. 挑出 top 2，對它們做改寫\n${RUBRIC}\n\n輸出 JSON：{"my_scores":[{"id":1,"scores":{...},"total":數字,"comment":"..."}],"top_2_ids":[數字,數字],"revisions":[{"original_id":數字,"revised_title":"...","revised_summary":"...","what_changed":"...","new_scores":{...},"new_total":數字}]}`,
-      user: `Round 1：\n${JSON.stringify(r1, null, 2)}\n\n請評分、挑 top 2、改寫。`,
+      system: `你是冷酷的分析師。${ctx}\n\n看完上一輪 4 個提案：\n1. **沿用 Round 1 的 scoring_dimensions**，用同維度給每個打分（你可以更嚴格）\n2. 挑出 top 2，對它們做改寫\n${RUBRIC}\n\n輸出 JSON：{"my_scores":[{"id":1,"scores":{...同 R1 維度...},"total":數字,"comment":"..."}],"top_2_ids":[數字,數字],"revisions":[{"original_id":數字,"revised_title":"...","revised_summary":"...","what_changed":"...","new_scores":{...同維度...},"new_total":數字}]}`,
+      user: `Round 1（包含選定的 scoring_dimensions）：\n${JSON.stringify(r1, null, 2)}\n\n請沿用同樣維度評分、挑 top 2、改寫。`,
     }),
     round3: (ctx, r1, r2) => ({
-      system: `你是資深品牌經理，要拍板最終建議。${ctx}\n\n看完前兩輪：選 2 個最終提案（從 round1 原版 + round2 修訂版中選），第一名要說「為什麼這個值得做」。\n${RUBRIC}\n\n輸出 JSON：{"final_picks":[{"rank":1,"title":"...","summary":"...","why_this":"為什麼選這個（2-3 句）","final_scores":{...},"final_total":數字,"post_first":true}],"owner_message":"給使用者的訊息（3-4 句總結）"}`,
-      user: `Round 1：\n${JSON.stringify(r1, null, 2)}\n\nRound 2：\n${JSON.stringify(r2, null, 2)}\n\n請仲裁。`,
+      system: `你是資深品牌經理／決策顧問，要拍板最終建議。${ctx}\n\n看完前兩輪：選 2 個最終提案，**沿用 Round 1 scoring_dimensions**。\n${RUBRIC}\n\n輸出 JSON：{"final_picks":[{"rank":1,"title":"...","summary":"...","why_this":"為什麼選這個（2-3 句）","final_scores":{...同 R1 維度...},"final_total":數字,"post_first":true}],"owner_message":"給使用者的訊息（3-4 句總結）"}`,
+      user: `Round 1：\n${JSON.stringify(r1, null, 2)}\n\nRound 2：\n${JSON.stringify(r2, null, 2)}\n\n沿用 R1 維度仲裁。`,
     }),
   },
 
   adversarial: {
     label: '對抗型',
     round1: (ctx) => ({
-      system: `你是樂觀的策略企劃。${ctx}\n\n提案 4 個方案，盡量樂觀，因為下一輪會有人專門找你問題。每個附「為什麼會成功」的論據。\n${RUBRIC}\n\n輸出 JSON：{"proposals":[{"id":1,"title":"...","summary":"...","why_will_work":"2-3 句樂觀論據","scores":{...},"total":數字}]}`,
+      system: `你是樂觀的策略企劃。${ctx}\n\n第一步：決定打分維度（看任務類型 + 使用者規則，挑 3-5 個適合的）。\n第二步：提案 4 個方案，盡量樂觀（下一輪會有 red team 專門找你問題）。每個附「為什麼會成功」的論據。\n${RUBRIC}\n\n輸出 JSON：{"scoring_dimensions":["維度 1","維度 2","維度 3","維度 4"],"dimensions_rationale":"為什麼選這幾個（1 句）","proposals":[{"id":1,"title":"...","summary":"...","why_will_work":"2-3 句樂觀論據","scores":{"維度 1":數字,...},"total":數字}]}`,
       user: '請提案 4 個會成功的方案。',
     }),
     round2: (ctx, r1) => ({
-      system: `你是 red team 分析師。${ctx}\n\n對上一輪每個方案找出最壞情境：\n1. 翻車風險（具體）\n2. 隱藏的不對齊\n3. 競品 / 過去做過已經失敗的相似案例\n4. 災難打分\n\n誠實但不為反對而反對。\n\n輸出 JSON：{"attacks":[{"id":數字,"risk_summary":"1 句最大風險","failure_modes":["翻車情境 1","2"],"hidden_misfit":"...","saturation":"...","disaster_scores":{...},"disaster_total":數字,"verdict":"salvageable" 或 "kill"}]}`,
-      user: `Round 1：\n${JSON.stringify(r1, null, 2)}\n\n對每個方案找最壞情境。`,
+      system: `你是 red team 分析師。${ctx}\n\n對上一輪每個方案找出最壞情境，**沿用 Round 1 scoring_dimensions** 做災難打分：\n1. 翻車風險（具體）\n2. 隱藏的不對齊\n3. 過去類似失敗案例\n4. 災難打分（同維度，但從悲觀視角）\n\n誠實但不為反對而反對。\n\n輸出 JSON：{"attacks":[{"id":數字,"risk_summary":"1 句最大風險","failure_modes":["翻車情境 1","2"],"hidden_misfit":"...","saturation":"...","disaster_scores":{...同 R1 維度...},"disaster_total":數字,"verdict":"salvageable" 或 "kill"}]}`,
+      user: `Round 1（含 scoring_dimensions）：\n${JSON.stringify(r1, null, 2)}\n\n對每個方案找最壞情境、沿用同維度做災難打分。`,
     }),
     round3: (ctx, r1, r2) => ({
-      system: `你是冷靜的品牌總監，要在樂觀派跟悲觀派之間仲裁。${ctx}\n\n1. 選 2 個「即使有風險也值得做」的方案，每個標明風險 + 緩解策略\n2. 點名 1 個「絕對不要做」的，說清楚為什麼\n3. 給使用者一段訊息\n${RUBRIC}\n\n輸出 JSON：{"final_picks":[{"rank":1,"title":"...","summary":"...","main_risk":"...","mitigation":"...","final_total":數字,"post_first":true}],"killed":{"title":"...","why_killed":"..."},"owner_message":"訊息（3-4 句）"}`,
-      user: `Round 1：\n${JSON.stringify(r1, null, 2)}\n\nRound 2 紅隊：\n${JSON.stringify(r2, null, 2)}\n\n仲裁。`,
+      system: `你是冷靜的決策總監，要在樂觀派跟悲觀派之間仲裁。${ctx}\n\n1. 選 2 個「即使有風險也值得做」的方案，每個標明風險 + 緩解策略\n2. 點名 1 個「絕對不要做」的，說清楚為什麼\n3. 給使用者一段訊息\n沿用 R1 scoring_dimensions。\n${RUBRIC}\n\n輸出 JSON：{"final_picks":[{"rank":1,"title":"...","summary":"...","main_risk":"...","mitigation":"...","final_scores":{...同 R1 維度...},"final_total":數字,"post_first":true}],"killed":{"title":"...","why_killed":"..."},"owner_message":"訊息（3-4 句）"}`,
+      user: `Round 1：\n${JSON.stringify(r1, null, 2)}\n\nRound 2 紅隊：\n${JSON.stringify(r2, null, 2)}\n\n沿用 R1 維度仲裁。`,
     }),
   },
 
   copy_writer: {
     label: '文案職人型',
     round1: (ctx) => ({
-      system: `你是文案職人。${ctx}\n\n提案 2 個版本，每個都寫到「可以直接用」的完整度（hook + 主文 + CTA + 縮寫版）。\n\n輸出 JSON：{"proposals":[{"id":1,"title":"...","hook":"第一行 hook (30 字內)","body":"主文 (200-400 字)","cta":"CTA 段落","short_version":"縮寫版 (50-100 字，適合 Threads / email subject)","scores":{...},"total":數字}]}`,
+      system: `你是文案職人。${ctx}\n\n第一步：決定打分維度（文案類預設 hook / brand_fit / novelty / engagement；履歷類用 相關性/突顯亮點/誠實度/可信度；email/提案用 收件人接受度/清晰度/行動力觸發。看任務挑 3-5 個）。\n第二步：提案 2 個版本，每個寫到「可以直接用」的完整度。\n${RUBRIC}\n\n輸出 JSON：{"scoring_dimensions":["維度 1","維度 2","維度 3","維度 4"],"dimensions_rationale":"為什麼選這幾個（1 句）","proposals":[{"id":1,"title":"...","hook":"第一行 hook (30 字內)","body":"主文 (200-400 字)","cta":"CTA 段落","short_version":"縮寫版 (50-100 字)","scores":{"維度 1":數字,...},"total":數字}]}`,
       user: '請提案 2 個完整版本。',
     }),
     round2: (ctx, r1) => ({
-      system: `你是冷酷的文案編輯。${ctx}\n\n針對每個提案找出文案缺陷並改寫：hook 強度、節奏、CTA 自然度、整體調性。改寫不要客氣。\n\n輸出 JSON：{"critiques":[{"id":數字,"hook_critique":"...","rhythm_critique":"...","cta_critique":"...","revised":{"hook":"更強的 hook","body":"改過的主文","cta":"改過的 CTA","short_version":"..."},"what_changed":"...","new_scores":{...},"new_total":數字}]}`,
-      user: `Round 1：\n${JSON.stringify(r1, null, 2)}\n\n改寫。`,
+      system: `你是冷酷的文案編輯。${ctx}\n\n針對每個提案找出文案缺陷並改寫：hook 強度、節奏、CTA 自然度、整體調性。**沿用 Round 1 的 scoring_dimensions** 重評。\n${RUBRIC}\n\n輸出 JSON：{"critiques":[{"id":數字,"hook_critique":"...","rhythm_critique":"...","cta_critique":"...","revised":{"hook":"更強的 hook","body":"改過的主文","cta":"改過的 CTA","short_version":"..."},"what_changed":"...","new_scores":{...同 R1 維度...},"new_total":數字}]}`,
+      user: `Round 1（含 scoring_dimensions）：\n${JSON.stringify(r1, null, 2)}\n\n沿用同維度改寫。`,
     }),
     round3: (ctx, r1, r2) => ({
-      system: `你是資深主編。${ctx}\n\n挑 1 個明天主用 + 1 個備胎。主用要產出「可直接複製貼上」最終版（hook + body + CTA + short_version）。\n\n輸出 JSON：{"final_picks":[{"rank":1,"post_first":true,"title":"...","ready_to_post":{"hook":"...","body":"...","cta":"...","short_version":"..."},"final_total":數字,"why_this_wins":"..."},{"rank":2,"post_first":false,"title":"...","summary_only":"備胎簡述","when_to_use":"什麼情況改用","final_total":數字}],"owner_message":"訊息","metrics_to_watch":["..."]}`,
-      user: `R1：\n${JSON.stringify(r1, null, 2)}\n\nR2：\n${JSON.stringify(r2, null, 2)}\n\n仲裁。`,
+      system: `你是資深主編。${ctx}\n\n挑 1 個明天主用 + 1 個備胎。主用要產出「可直接複製貼上」最終版。沿用 R1 scoring_dimensions。\n${RUBRIC}\n\n輸出 JSON：{"final_picks":[{"rank":1,"post_first":true,"title":"...","ready_to_post":{"hook":"...","body":"...","cta":"...","short_version":"..."},"final_scores":{...同 R1 維度...},"final_total":數字,"why_this_wins":"..."},{"rank":2,"post_first":false,"title":"...","summary_only":"備胎簡述","when_to_use":"什麼情況改用","final_total":數字}],"owner_message":"訊息","metrics_to_watch":["..."]}`,
+      user: `R1：\n${JSON.stringify(r1, null, 2)}\n\nR2：\n${JSON.stringify(r2, null, 2)}\n\n沿用 R1 維度仲裁。`,
     }),
   },
 };
@@ -756,6 +767,14 @@ function humanizeError(msg) {
 function renderResult(r3, allRounds) {
   let html = '';
   const picks = r3.final_picks || [];
+
+  // 顯示這次任務用的評分維度（從 R1 抓出）
+  const dims = allRounds?.round1?.scoring_dimensions;
+  const dimsWhy = allRounds?.round1?.dimensions_rationale;
+  if (Array.isArray(dims) && dims.length) {
+    html += `<div class="greeting"><div class="lbl">本次評分維度</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">${dims.map(d => `<span style="background:var(--bg);padding:4px 10px;border-radius:6px;font-size:13px;">${escapeHtml(d)}</span>`).join('')}</div>${dimsWhy ? `<div style="font-size:12px;color:var(--muted);">${escapeHtml(dimsWhy)}</div>` : ''}</div>`;
+  }
+
   if (r3.owner_message) {
     html += `<div class="greeting"><div class="lbl">給你的訊息</div><div>${escapeHtml(r3.owner_message)}</div></div>`;
   }
@@ -779,12 +798,8 @@ function renderResult(r3, allRounds) {
       ${p.main_risk ? `<div class="why">⚠️ 主要風險：${escapeHtml(p.main_risk)}<br>緩解：${escapeHtml(p.mitigation || '')}</div>` : ''}
       ${p.when_to_use ? `<div class="why">🔁 何時改用：${escapeHtml(p.when_to_use)}</div>` : ''}
       <div class="scores">
-        ${p.final_scores ? `
-          <span>hook ${p.final_scores.hook ?? '-'}</span>
-          <span>brand ${p.final_scores.brand_fit ?? '-'}</span>
-          <span>novel ${p.final_scores.novelty ?? '-'}</span>
-          <span>engage ${p.final_scores.engagement ?? '-'}</span>` : ''}
-        ${p.final_total ? `<span class="total">總分 ${p.final_total}</span>` : ''}
+        ${p.final_scores ? Object.entries(p.final_scores).map(([k, v]) => `<span>${escapeHtml(k)} ${v ?? '-'}</span>`).join('') : ''}
+        ${p.final_total != null ? `<span class="total">總分 ${p.final_total}</span>` : ''}
       </div>
     </div>`;
   }
