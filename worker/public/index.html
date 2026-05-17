@@ -169,6 +169,29 @@ details.full pre {
 .cta-box ul { margin: 8px 0; padding-left: 22px; font-size: 14px; }
 .cta-box ul li { margin: 4px 0; }
 
+.spec-wrap { margin: 14px 0 8px; border: 1px solid var(--border); border-radius: 10px; background: var(--panel); }
+.spec-wrap > summary { cursor: pointer; padding: 14px 18px; font-size: 14px; font-weight: 600; color: var(--text); list-style: none; user-select: none; }
+.spec-wrap > summary::-webkit-details-marker { display: none; }
+.spec-wrap > summary::after { content: ' ▼'; color: var(--muted); font-size: 10px; float: right; }
+.spec-wrap[open] > summary::after { content: ' ▲'; }
+.spec-wrap[open] > summary { border-bottom: 1px solid var(--border); }
+.spec-inner { padding: 16px 18px 18px; position: relative; }
+.spec-copy {
+  position: sticky; top: 8px; float: right;
+  background: #1B4332; color: #FAF8F3; border: 0;
+  padding: 8px 14px; border-radius: 6px;
+  font-size: 13px; font-weight: 500; cursor: pointer;
+  z-index: 1; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+.spec-copy:hover { background: #2D6A4F; }
+#spec-text {
+  background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+  padding: 20px 22px; font-size: 12.5px; line-height: 1.7;
+  overflow-x: auto; white-space: pre-wrap; color: var(--text);
+  margin: 0; max-height: 480px; overflow-y: auto;
+  font-family: ui-sans-serif, -apple-system, "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+}
+
 footer { text-align: center; margin-top: 40px; font-size: 12px; color: var(--muted); }
 footer a { color: var(--muted); text-decoration: underline; }
 
@@ -320,22 +343,137 @@ footer a { color: var(--muted); text-decoration: underline; }
   <!-- CTA：想要自己的完整版 -->
   <div class="cta-box">
     <h3>🛠️ 想要真正好用的版本？</h3>
-    <p>這個 demo 每次都像「跟陌生 AI 講話」——它不知道你是誰、做過什麼、喜歡什麼風格。所以每次都要重新打字、重新解釋。</p>
-    <p><strong>裝一份在自己電腦上</strong>，AI 就會記得你，下次直接從「老朋友」開始討論：</p>
-    <ol>
-      <li>💻 <strong>在自己電腦跑</strong>，用你自己申請的免費 key，沒人偷看你問什麼、也沒次數限制</li>
-      <li>🧠 <strong>AI 會記得你</strong>——你是誰、做什麼、不能碰什麼，一次告訴它之後每次都自動用</li>
-      <li>📚 <strong>可以餵它你的素材庫</strong>——過去寫過什麼、什麼有效、什麼翻車，越用 AI 越懂你</li>
-    </ol>
-    <p style="margin-top:14px;margin-bottom:8px;"><strong>怎麼裝？</strong> 把工具下載下來，開 Claude Code 跟它說「幫我設定」就好，不用會寫程式。<br>
-      → 下載點：<a href="https://github.com/ailifelabtw/night-worker" target="_blank">GitHub 上的 ailifelabtw/night-worker</a></p>
-    <p style="margin:8px 0;font-size:13px;color:var(--muted);">複製下面這段，貼到你的 Claude Code（命令列 <code>claude</code> 或 Claude Desktop 的 <strong>Code 模式</strong>，不要用 Cowork 會卡在 API 那關）：</p>
-    <pre style="background:var(--bg);padding:14px 16px;border-radius:8px;font-size:13px;line-height:1.6;white-space:pre-wrap;border:1px solid var(--border);margin:6px 0;">我要安裝夜間智囊團：https://github.com/ailifelabtw/night-worker
+    <p>這個 demo 主要是「展示」——幫你把幾個免費 AI 串起來，用最基本的邏輯讓它們彼此辯論，讓你體驗 3 個模型互相討論大概是什麼感覺。</p>
+    <p>但如果你希望它產出<strong>真的可以拿來用</strong>、更完整、更強大的內容，會建議你搭配 <strong>Claude Code</strong> 蓋一份屬於自己的版本——它會根據你的使用情境、想討論的事、想用的模型，蓋出一個專屬於你的工具。AI 會從「陌生 AI 講話」進化成真正記得你的「老朋友」。</p>
 
-幫我 clone 到 ~/dev/，然後讀裡面的 CLAUDE.md，按照「情境 1」的 onboarding SOP 帶我設定。我是非工程背景，你動手檢查環境、跑指令，需要我給的資訊（API key 之類）就停下來問。設定完幫我開 UI（npm run ui）。</pre>
+    <p style="margin-top:18px;"><strong>怎麼做？</strong> 把下面這份規格書複製貼到你的 Claude Code，它會帶你 6 步走完：</p>
+
+    <details class="spec-wrap">
+      <summary>📋 展開規格書（複製整段貼到 Claude Code）</summary>
+      <div class="spec-inner">
+        <button class="spec-copy" onclick="(()=>{const t=document.getElementById('spec-text').innerText;navigator.clipboard.writeText(t);this.textContent='✓ 已複製';setTimeout(()=>this.textContent='📋 複製整段',1500);})()">📋 複製整段</button>
+<pre id="spec-text"># 夜間智囊團 — 客製化版本建構規格書
+
+把整份規格貼到你的 Claude Code，Claude 會帶你蓋一個完全為你設計的多模型辯論工具。
+
+---
+
+## Hi Claude，這是你的工作
+
+使用者剛把這份規格貼給你。你的任務是跟使用者跑下面 6 步對話，幫他蓋出專屬於他、能在他電腦上跑的多模型辯論工具。
+
+**重點原則**：
+- 每一步問完、等使用者答完，才進下一步。不要一次丟 6 個問題
+- 不要照單全收使用者第 1 句的描述就開工——多挖一點才能蓋準
+- 「**判斷準則**」最重要，直接決定模型怎麼評分、整個工具的品質
+- 蓋完一定要跑一次 demo 任務驗證，再交付
+
+---
+
+## Step 1 — 主要會用來討論什麼類型的事？
+
+問使用者：「你主要會用這個工具討論哪類事情？」
+
+可給範例幫他想（不限定）：
+- 內容創作（明天發什麼貼文、寫文案、寫 email）
+- 個人決策（兩難判斷、ABC 方案選擇、要不要接這個 case）
+- 改履歷 / 自介 / 提案
+- 人際對話（難開口、衝突處理）
+- 規劃（季度方向、學習路線）
+- 其他他想到的
+
+多種類型 → 確認哪一類最常用，先為那類設計，之後擴充。
+單一類型 → 工具就為這類深度優化。
+
+---
+
+## Step 2 — 這類事需要哪些背景跟判斷準則？
+
+根據 Step 1 答案，問他通常需要哪些背景。給啟發但不寫死。譬如：
+
+- 內容創作 → 受眾、風格、過去做過什麼、紅線
+- 改履歷 → 目標職位、現有素材、想突顯什麼
+- 個人決策 → 選項、限制、紅線、目前傾向
+- 人際對話 → 對方是誰、想要的結果、最在意對方什麼反應
+
+接著問**最關鍵的一題**：「對你來說怎樣的答案算『好』？怎樣算『翻車』？」
+
+這會變成模型的評分維度。答不出來 → 沒關係，告訴他「跑幾次有 feel 再回來補」。
+
+---
+
+## Step 3 — 想用哪些模型來辯論？
+
+至少 3 個不同模型／角色才有辯論意義。選項：
+
+1. **你自己（Claude）roleplay 1-N 個角色** — 不用任何 API key、立刻能跑、能力最強。**強烈推薦至少 1 個 role 用這個**——這是只有 Claude Code 環境才有的優勢
+2. **Groq 免費**（Llama 4 Scout / Llama 3.3 70B 等）— 快、穩，需要免費 key：console.groq.com
+3. **NVIDIA 免費**（Kimi K2.6 / Nemotron / DeepSeek）— 模型強但有時慢，需要免費 key：build.nvidia.com
+4. **付費 API**（Claude / OpenAI / Gemini）— 想要更大 context、更穩定品質
+
+幫他組一個 3-model 配置。選擇障礙 → 推薦：
+- 提案者：Groq Llama 4 Scout（快）
+- 評論者：**你（Claude）** roleplay 嚴格批評者
+- 仲裁者：Groq Llama 3.3 70B 或 **你（Claude）** roleplay 最終決策者
+
+---
+
+## Step 4 — 要哪種辯論策略？
+
+4 種預設可介紹：
+
+- **共識型** — 廣撒網提案 → 收斂出最佳解。適合「不知道有哪些選項」
+- **對抗型** — 樂觀派提案 → 紅隊找翻車 → 仲裁。適合「已經有方向但怕踩雷」
+- **受眾紅隊** — 提案 → 模擬不同讀者反應 → 用反應預測效果。適合「想知道別人會怎麼想」
+- **文案職人** — 直接寫完整可貼版本（hook + 主文 + CTA）。**只適合**最終想要的是一段文字
+
+也可以**自己設計策略**：問他想要的 R1→R2→R3 流程，你幫他寫 prompt。
+
+---
+
+## Step 5 — 要 UI 還是純 CLI？
+
+- **純 CLI** — 按指令跑、結果存 JSON。適合「我只要結果」
+- **本機 web UI** — 起 node server，瀏覽器填表單。比 CLI 友善
+- **部署雲端**（Cloudflare Workers）— 手機可開、可分享給朋友
+
+---
+
+## Step 6 — 動手蓋
+
+根據 Step 1-5 的答案建資料夾。基本結構：
+
+my-thinktank/
+  config/
+    persona.json     # Step 1+2 的人設 + 判斷準則
+  scripts/
+    debate.mjs       # 主迴圈，依 Step 4 策略
+    models.mjs       # Step 3 的模型呼叫
+  .env               # API keys (.gitignore)
+  ui/                # 如果 Step 5 選 web UI
+
+**動手順序**：
+1. 建資料夾
+2. 帶他拿需要的 API key → **用 Edit 工具安全寫進 .env**，不要 echo
+3. 寫 models.mjs — 含他選的模型呼叫；用 Claude 當辯論者 = 直接用 Task 工具呼叫你自己 roleplay
+4. 寫 debate.mjs — 依策略跑
+5. 寫 persona.json — 把 Step 1+2 答案結構化
+6. 選了 UI → 用本機 node http server + 單檔 HTML
+7. **跑一次 demo 任務驗證**，用他真的關心的問題
+8. 跑出結果後問「有幫到嗎？」有就把工具的運作方式寫成 README.md 放他資料夾
+
+---
+
+## 參考實作
+
+想看一個已經做好的版本當參考（不需要照抄）：https://github.com/ailifelabtw/night-worker
+
+那是 Linda 自己用的固定配置（Groq + NVIDIA 三模型輪流）。你幫使用者蓋的會是**針對他量身的版本**。</pre>
+      </div>
+    </details>
 
     <div class="ai-skill">
-      <strong>⚠️ 但 AI 真正的關鍵能力在這裡：</strong>
+      <strong>⚠️ 順便講：AI 真正的關鍵能力在這裡</strong>
       <p style="margin:6px 0;">把工具裝起來只是入場券。真正會讓 AI 為你工作 vs 一般人，差在「<strong>你怎麼設計 context</strong>」：</p>
       <ul>
         <li>建立<strong>完整的人設</strong>（你是誰、受眾是誰、你的語氣、不能踩的紅線）</li>
