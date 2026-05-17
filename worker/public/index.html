@@ -360,13 +360,37 @@ footer a { color: var(--muted); text-decoration: underline; }
 
 ## Hi Claude，這是你的工作
 
-使用者剛把這份規格貼給你。你的任務是跟使用者跑下面 6 步對話，幫他蓋出專屬於他、能在他電腦上跑的多模型辯論工具。
+使用者剛把這份規格貼給你。你的任務：幫他蓋出一個**多模型辯論工具**，能在他電腦上跑、為他的具體使用場景客製化。
 
 **重點原則**：
 - 每一步問完、等使用者答完，才進下一步。不要一次丟 6 個問題
 - 不要照單全收使用者第 1 句的描述就開工——多挖一點才能蓋準
 - 「**判斷準則**」最重要，直接決定模型怎麼評分、整個工具的品質
 - 蓋完一定要跑一次 demo 任務驗證，再交付
+
+---
+
+## 目標：我們要一起蓋什麼？
+
+一個「多模型辯論工具」。使用者丟一個問題／任務進去，3+ 個 AI 模型（或角色）會輪流跑 3 輪：
+
+- **Round 1 提案** — 開幾個方向 + 評分
+- **Round 2 評論** — 第二個模型用同維度重評、修改
+- **Round 3 仲裁** — 第三個模型整合、挑出最終建議
+
+**核心特性**（每個版本都要有）：
+- 動態評分維度（看任務類型 + 使用者判斷準則自動選 3-5 個維度）
+- Fallback chain（某 model 失敗自動換備胎，不中斷）
+- 結果可重跑（同任務換策略多跑幾次）
+
+**可選特性**（看使用者要哪些）：
+- 本機 UI（瀏覽器表單，比命令列友善）
+- 定時自動跑（每晚 02:00 自動跑指定任務，醒來看結果——這就是「夜間智囊團」名字的由來）
+- 雲端部署（CF Workers，手機可開、可分享給朋友）
+- 歷史紀錄（存所有跑過的結果，可回顧 / 比較不同次）
+- 跑完通知（email / LINE / Slack / desktop pop-up）
+
+下面 6 步是跟使用者對話，蒐集他「**這個版本的具體需求**」，再動手蓋。
 
 ---
 
@@ -431,11 +455,27 @@ footer a { color: var(--muted); text-decoration: underline; }
 
 ---
 
-## Step 5 — 要 UI 還是純 CLI？
+## Step 5 — 怎麼跑、怎麼交付？
 
-- **純 CLI** — 按指令跑、結果存 JSON。適合「我只要結果」
-- **本機 web UI** — 起 node server，瀏覽器填表單。比 CLI 友善
-- **部署雲端**（Cloudflare Workers）— 手機可開、可分享給朋友
+問三件事（不要連續追問，看 fan 講到哪先停）：
+
+**(a) 觸發方式：手動 vs 自動排程？**
+- **手動** — 每次想跑時自己按。最簡單，先這個
+- **自動排程** — 固定時間自動跑（譬如每晚 02:00、每週一早 8 點）。選項：
+  - 本機 cron / macOS launchd（電腦要開著）
+  - GitHub Actions cron（免費、不用電腦開、需要 push 到 GitHub）
+  - Cloudflare Cron（免費、雲端、需要部署 Worker）
+
+**(b) 介面：怎麼丟任務進去？**
+- **純 CLI**（命令列）— 最簡單，按指令跑
+- **本機 web UI** — 瀏覽器表單，比 CLI 友善
+- **雲端 web UI** — 手機可開、可分享
+
+**(c) 結果怎麼收？**
+- **只存 JSON 檔**（最簡單，他自己去看）
+- **跳 desktop 通知**（macOS osascript / Linux notify-send）
+- **寄 email**（需要 SMTP 或 Resend 之類的 API key）
+- **推 LINE / Telegram / Slack / Discord**（需要 webhook）
 
 ---
 
@@ -450,17 +490,21 @@ my-thinktank/
     debate.mjs       # 主迴圈，依 Step 4 策略
     models.mjs       # Step 3 的模型呼叫
   .env               # API keys (.gitignore)
-  ui/                # 如果 Step 5 選 web UI
+  results/           # 跑出來的結果（也 .gitignore 或視情況）
+  ui/                # 如果 Step 5b 選 web UI
+  .github/workflows/ # 如果 Step 5a 選 GitHub Actions cron
 
 **動手順序**：
 1. 建資料夾
 2. 帶他拿需要的 API key → **用 Edit 工具安全寫進 .env**，不要 echo
 3. 寫 models.mjs — 含他選的模型呼叫；用 Claude 當辯論者 = 直接用 Task 工具呼叫你自己 roleplay
-4. 寫 debate.mjs — 依策略跑
+4. 寫 debate.mjs — 依策略跑 3 輪、含 fallback chain
 5. 寫 persona.json — 把 Step 1+2 答案結構化
 6. 選了 UI → 用本機 node http server + 單檔 HTML
-7. **跑一次 demo 任務驗證**，用他真的關心的問題
-8. 跑出結果後問「有幫到嗎？」有就把工具的運作方式寫成 README.md 放他資料夾
+7. 選了排程 → 寫對應的 cron config / workflow yml
+8. 選了通知 → 串對應 webhook / SMTP
+9. **跑一次 demo 任務驗證**，用他真的關心的問題
+10. 跑出結果後問「有幫到嗎？」有就把工具的運作方式寫成 README.md 放他資料夾
 
 ---
 
@@ -468,7 +512,7 @@ my-thinktank/
 
 想看一個已經做好的版本當參考（不需要照抄）：https://github.com/ailifelabtw/night-worker
 
-那是 Linda 自己用的固定配置（Groq + NVIDIA 三模型輪流）。你幫使用者蓋的會是**針對他量身的版本**。</pre>
+那是 Linda 自己用的固定配置（Groq + NVIDIA 三模型輪流、含 GitHub Actions 每晚排程、CF Worker 部署）。你幫使用者蓋的會是**針對他量身的版本**。</pre>
       </div>
     </details>
 
