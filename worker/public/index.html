@@ -51,6 +51,10 @@ header .sub { color: var(--text); font-size: 15px; margin-top: 12px; line-height
   line-height: 1.65;
 }
 .banner .lbl { font-size: 11px; color: var(--muted); margin-bottom: 8px; letter-spacing: 0.5px; }
+.banner-title { font-size: 12px; font-weight: 700; color: var(--accent); margin-bottom: 8px; letter-spacing: 1px; }
+.banner-list { margin: 0; padding-left: 22px; }
+.banner-list li { margin: 6px 0; }
+.banner-list li::marker { color: var(--accent); font-weight: 700; }
 
 .section { margin: 28px 0; }
 .section h2 { font-size: 14px; color: var(--muted); margin: 0 0 10px; font-weight: 500; letter-spacing: 0.4px; }
@@ -209,7 +213,11 @@ footer a { color: var(--muted); text-decoration: underline; }
   </header>
 
   <div class="banner" id="modeBanner">
-    這是 Demo 版。NVIDIA 提供的免費模型偶爾會比較慢——卡住會自動切備胎，是免費資源的限制、不是工具壞掉。想要更穩、能客製化，建議用 Claude Code 跑一份自己的。
+    <div class="banner-title">備註</div>
+    <ol class="banner-list">
+      <li>這是 Demo 版，可試用實際跑的狀況，但建議把它複製回 Claude Code 客製化，產出才會更符合你的需要。</li>
+      <li>近期 NVIDIA 提供的免費模型有時會不穩定或比較慢，系統有設 Groq 做為預備的模型。自己使用時也可以接付費模型、或直接在 Claude 裡跑，表現會更好。</li>
+    </ol>
   </div>
 
   <!-- 表單 -->
